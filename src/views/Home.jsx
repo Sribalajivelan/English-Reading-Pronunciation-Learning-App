@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useApp } from '../lib/context.js'
 import { DAYS } from '../data/days.js'
 import { TOTAL, doneCount, nextDay, streak } from '../lib/progress.js'
+import Backup from '../components/Backup.jsx'
 import { SpeakerIcon } from '../components/Icons.jsx'
 
 const WEEKS = [['வாரம் 1 · Foundation', 1, 7], ['வாரம் 2 · Building', 8, 14], ['வாரம் 3 · Intermediate', 15, 21], ['வாரம் 4 · Advanced', 22, 28], ['நாள் 29–30 · Planning', 29, 30]]
@@ -77,6 +78,8 @@ export default function Home() {
           })}
         </div>
       </section>
+
+      <Backup />
 
       <section className="card">
         <h3 className="ta" style={{ marginBottom: 6 }}>பயிற்சிக் குறிப்புகள்</h3>

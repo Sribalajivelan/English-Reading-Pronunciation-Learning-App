@@ -1,30 +1,98 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { DAYS } from '../data/days.js'
 
 const KEY = 'ap-v1'
+const BAK = 'ap-v1-bak'
 export const TOTAL = 30
+const VERSION = 2
 
-const EMPTY = { done: {}, tasks: {}, rating: {}, best: {}, counter: {}, speed: {}, slow: false, voice: '' }
+const EMPTY = { v: VERSION, done: {}, tasks: {}, rating: {}, best: {}, counter: {}, speed: {}, slow: false, voice: '', saved: '' }
 
-function load() {
-  try {
-    const s = JSON.parse(localStorage.getItem(KEY) || '{}') || {}
-    return { ...EMPTY, ...s, done: s.done || {}, tasks: s.tasks || {}, rating: s.rating || {}, best: s.best || {}, counter: s.counter || {}, speed: s.speed || {} }
-  } catch { return { ...EMPTY } }
+/** Fill in any missing fields so older saves keep working. */
+function normalize(s) {
+  s = s && typeof s === 'object' ? s : {}
+  const o = (k) => (s[k] && typeof s[k] === 'object' ? s[k] : {})
+  return { ...EMPTY, ...s, v: VERSION, done: o('done'), tasks: o('tasks'), rating: o('rating'), best: o('best'), counter: o('counter'), speed: o('speed') }
 }
 
-/** Progress state persisted in localStorage (this browser only). */
+function read(key) {
+  try { const raw = localStorage.getItem(key); return raw ? normalize(JSON.parse(raw)) : null } catch { return null }
+}
+
+/** Load the main save; if it is damaged, fall back to the automatic backup copy. */
+function load() { return read(KEY) || read(BAK) || normalize({}) }
+
+function write(next) {
+  try {
+    const prev = localStorage.getItem(KEY)
+    if (prev) localStorage.setItem(BAK, prev)       // keep the previous version as a safety copy
+    localStorage.setItem(KEY, JSON.stringify(next))
+    return true
+  } catch { return false }
+}
+
+let persistAsked = false
+/** Ask the browser not to clear our data when the device is low on space. */
+export function requestPersistence() {
+  if (persistAsked || !navigator.storage?.persist) return
+  persistAsked = true
+  navigator.storage.persist().catch(() => {})
+}
+
+/** Progress state saved in localStorage, kept in sync across open tabs. */
 export function useProgress() {
   const [S, setS] = useState(load)
+  const [saveOk, setSaveOk] = useState(true)
+
   const update = useCallback(fn => {
     setS(prev => {
       const next = structuredClone(prev)
       fn(next)
-      try { localStorage.setItem(KEY, JSON.stringify(next)) } catch { /* storage unavailable */ }
+      next.saved = new Date().toISOString()
+      setSaveOk(write(next))
       return next
     })
+    requestPersistence()
   }, [])
-  return [S, update]
+
+  useEffect(() => {
+    const on = e => { if (e.key === KEY) setS(read(KEY) || normalize({})) }
+    window.addEventListener('storage', on)
+    return () => window.removeEventListener('storage', on)
+  }, [])
+
+  return [S, update, saveOk]
+}
+
+/* ---------- backup code: short text you can send over WhatsApp ---------- */
+const PREFIX = 'AP2:'
+
+export function exportCode(S) {
+  const { slow, voice, saved, ...core } = S
+  return PREFIX + btoa(JSON.stringify({ ...core, slow, voice }))
+}
+
+/** Parse a backup code or a backup file's text. Returns normalized progress or null. */
+export function parseBackup(text) {
+  try {
+    const t = String(text).trim()
+    const json = t.startsWith(PREFIX) ? atob(t.slice(PREFIX.length).replace(/\s/g, '')) : t
+    const data = JSON.parse(json)
+    if (!data || typeof data !== 'object' || !('done' in data)) return null
+    return normalize(data)
+  } catch { return null }
+}
+
+/** Combine two saves without losing anything from either. */
+export function mergeProgress(a, b) {
+  const out = normalize(a)
+  for (const [k, v] of Object.entries(b.done)) if (!out.done[k] || v < out.done[k]) out.done[k] = v
+  for (const [k, v] of Object.entries(b.tasks)) if (v) out.tasks[k] = true
+  for (const [k, v] of Object.entries(b.rating)) out.rating[k] = v
+  for (const [k, v] of Object.entries(b.best)) out.best[k] = Math.max(out.best[k] || 0, v)
+  for (const [k, v] of Object.entries(b.counter)) out.counter[k] = Math.max(out.counter[k] || 0, v)
+  for (const [k, v] of Object.entries(b.speed)) out.speed[k] = out.speed[k] ? Math.min(out.speed[k], v) : v
+  return out
 }
 
 export const todayStr = () => {

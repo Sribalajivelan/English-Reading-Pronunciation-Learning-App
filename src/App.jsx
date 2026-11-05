@@ -12,7 +12,7 @@ import Practice from './views/Practice.jsx'
 import Read from './views/Read.jsx'
 
 export default function App() {
-  const [S, update] = useProgress()
+  const [S, update, saveOk] = useProgress()
   const route = useRoute()
   const [msg, setMsg] = useState('')
   const timer = useRef()
@@ -25,7 +25,7 @@ export default function App() {
   const say = useCallback(t => { if (!speak(t, S.slow, S.voice)) toast(hasTTS ? 'ஒலி இயக்க முடியவில்லை' : 'இந்த உலாவியில் ஒலி வசதி இல்லை') }, [S.slow, S.voice, toast])
   useEffect(() => () => clearTimeout(timer.current), [])
 
-  const ctx = { S, update, say, toast }
+  const ctx = { S, update, say, toast, saveOk }
   const cur = route.v === 'day' ? 'plan' : route.v
   const view = { home: <Home />, plan: <Plan />, letters: <Letters />, practice: <Practice />, read: <Read /> }
 
