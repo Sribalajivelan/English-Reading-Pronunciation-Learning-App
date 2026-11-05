@@ -153,14 +153,15 @@ details.tip ul{padding-left:20px}
 .sec>h3 small{font-family:var(--f-ta);font-size:.8rem;font-weight:400;color:var(--muted)}
 .words{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
 .w{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;min-width:0;position:relative}
+.w{cursor:pointer}
 .w:active{background:var(--soft)}
+.w .wt{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;width:100%}
 .w .en{font-size:1.25rem;font-weight:500;overflow-wrap:anywhere;line-height:1.25}
 .w .tam{font-family:var(--f-ta);font-weight:700;color:var(--accent);font-size:1.02rem}
 .w .hint{font-size:.75rem;color:var(--muted);overflow-wrap:anywhere}
 .w .dots{display:flex;gap:4px;margin-top:6px}
 .w .dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
 .w .dots i.f{background:var(--mark)}
-.w .sp{position:absolute;top:10px;right:10px;width:18px;height:18px;color:var(--muted)}
 .repnote{font-family:var(--f-ta);font-size:.85rem;color:var(--muted)}
 .pats{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
 .pat{background:var(--mark-soft);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;text-align:left;border:0;min-width:0}
@@ -541,7 +542,7 @@ function reader(p,pi,open){
    ${p.q?`<div class="qa"><div><b>Q:</b> ${esc(p.q[0])} <span class="muted">(${esc(p.q[1])})</span></div><button class="btn ghost" type="button" data-act="reveal">பதிலைக் காட்டு</button><div class="ans" hidden>${esc(p.q[2])} · ${esc(p.q[3])}</div></div>`:''}</section>`;
 }
 function wordCard(w,key){
-  return `<button class="w" type="button" data-say="${esc(w.en)}" data-rep="${key}">${ICON.spk.replace('<svg','<svg class="sp"')}<span class="en">${esc(w.en)}</span><span class="tam">${esc(w.ta)}</span>${w.h?`<span class="hint">${esc(w.h)}</span>`:''}<span class="dots">${'<i></i>'.repeat(5)}</span></button>`;
+  return `<div class="w" data-say="${esc(w.en)}" data-rep="${key}"><div class="wt"><span class="en">${esc(w.en)}</span><button class="spk" type="button" data-say="${esc(w.en)}" data-rep="${key}" aria-label="Listen: ${esc(w.en)}">${ICON.spk}</button></div><span class="tam">${esc(w.ta)}</span>${w.h?`<span class="hint">${esc(w.h)}</span>`:''}<span class="dots">${'<i></i>'.repeat(5)}</span></div>`;
 }
 const reps={};
 let shuffleSeed=false,timer=null;
@@ -688,7 +689,7 @@ document.addEventListener('click',e=>{
   const el=e.target.closest('[data-say],[data-act]');if(!el)return;
   if(el.dataset.say){
     say(el.dataset.say);
-    if(el.dataset.rep){const k=el.dataset.rep;reps[k]=Math.min(5,(reps[k]||0)+1);el.querySelectorAll('.dots i').forEach((d,i)=>d.classList.toggle('f',i<reps[k]))}
+    if(el.dataset.rep){const k=el.dataset.rep;reps[k]=Math.min(5,(reps[k]||0)+1);el.closest('.w').querySelectorAll('.dots i').forEach((d,i)=>d.classList.toggle('f',i<reps[k]))}
     return;
   }
   const a=el.dataset.act,r=route(),n=r.n;
