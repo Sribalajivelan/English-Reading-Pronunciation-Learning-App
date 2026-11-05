@@ -6,13 +6,15 @@ const BAK = 'ap-v1-bak'
 export const TOTAL = 30
 const VERSION = 2
 
-const EMPTY = { v: VERSION, done: {}, tasks: {}, rating: {}, best: {}, counter: {}, speed: {}, slow: false, voice: '', saved: '' }
+const MAPS = ['done', 'tasks', 'rating', 'best', 'counter', 'speed']
+
+const EMPTY = { v: VERSION, done: {}, tasks: {}, rating: {}, best: {}, counter: {}, speed: {}, ts: {}, slow: false, voice: '', saved: '' }
 
 /** Fill in any missing fields so older saves keep working. */
 function normalize(s) {
   s = s && typeof s === 'object' ? s : {}
   const o = (k) => (s[k] && typeof s[k] === 'object' ? s[k] : {})
-  return { ...EMPTY, ...s, v: VERSION, done: o('done'), tasks: o('tasks'), rating: o('rating'), best: o('best'), counter: o('counter'), speed: o('speed') }
+  return { ...EMPTY, ...s, v: VERSION, done: o('done'), tasks: o('tasks'), rating: o('rating'), best: o('best'), counter: o('counter'), speed: o('speed'), ts: o('ts') }
 }
 
 function read(key) {
@@ -39,6 +41,18 @@ export function requestPersistence() {
   navigator.storage.persist().catch(() => {})
 }
 
+/** Record when each item last changed, so two devices can keep the newest change per item. */
+function stampChanges(prev, next) {
+  const now = Date.now()
+  const ts = { ...next.ts }
+  for (const m of MAPS) {
+    for (const k of new Set([...Object.keys(prev[m]), ...Object.keys(next[m])])) {
+      if (JSON.stringify(prev[m][k]) !== JSON.stringify(next[m][k])) ts[m + '.' + k] = now
+    }
+  }
+  next.ts = ts
+}
+
 /** Progress state saved in localStorage, kept in sync across open tabs. */
 export function useProgress() {
   const [S, setS] = useState(load)
@@ -48,11 +62,21 @@ export function useProgress() {
     setS(prev => {
       const next = structuredClone(prev)
       fn(next)
+      stampChanges(prev, next)
       next.saved = new Date().toISOString()
       setSaveOk(write(next))
       return next
     })
     requestPersistence()
+  }, [])
+
+  /** Replace progress with an already merged copy (used by cloud sync). Keeps this device's voice settings. */
+  const replace = useCallback(next => {
+    setS(prev => {
+      const n = { ...normalize(next), slow: prev.slow, voice: prev.voice, saved: new Date().toISOString() }
+      setSaveOk(write(n))
+      return n
+    })
   }, [])
 
   useEffect(() => {
@@ -61,7 +85,7 @@ export function useProgress() {
     return () => window.removeEventListener('storage', on)
   }, [])
 
-  return [S, update, saveOk]
+  return [S, update, saveOk, replace]
 }
 
 /* ---------- backup code: short text you can send over WhatsApp ---------- */
@@ -83,15 +107,46 @@ export function parseBackup(text) {
   } catch { return null }
 }
 
-/** Combine two saves without losing anything from either. */
+const syncKeys = ['done', 'tasks', 'rating', 'best', 'counter', 'speed', 'ts']
+/** The part of progress that is shared between devices (not voice or speed settings). */
+export function syncPart(S) {
+  const n = normalize(S)
+  return Object.fromEntries(syncKeys.map(k => [k, n[k]]))
+}
+/** Stable text form of the shared part, for "did anything change?" checks. */
+export function canon(S) {
+  const sort = v => (v && typeof v === 'object' ? Object.fromEntries(Object.keys(v).sort().map(k => [k, sort(v[k])])) : v)
+  return JSON.stringify(sort(syncPart(S)))
+}
+
+// When two saves have no timestamps for an item (older backups), keep the most generous value.
+const tie = {
+  done: (a, b) => (a < b ? a : b), tasks: () => true, rating: (_, b) => b,
+  best: Math.max, counter: Math.max, speed: Math.min,
+}
+
+/** Combine two saves. For each item the newest change wins, including deletions (un-ticking, reset). */
 export function mergeProgress(a, b) {
+  a = normalize(a); b = normalize(b)
   const out = normalize(a)
-  for (const [k, v] of Object.entries(b.done)) if (!out.done[k] || v < out.done[k]) out.done[k] = v
-  for (const [k, v] of Object.entries(b.tasks)) if (v) out.tasks[k] = true
-  for (const [k, v] of Object.entries(b.rating)) out.rating[k] = v
-  for (const [k, v] of Object.entries(b.best)) out.best[k] = Math.max(out.best[k] || 0, v)
-  for (const [k, v] of Object.entries(b.counter)) out.counter[k] = Math.max(out.counter[k] || 0, v)
-  for (const [k, v] of Object.entries(b.speed)) out.speed[k] = out.speed[k] ? Math.min(out.speed[k], v) : v
+  out.ts = {}
+  for (const m of MAPS) {
+    out[m] = {}
+    const keys = new Set([...Object.keys(a[m]), ...Object.keys(b[m])])
+    for (const t of [...Object.keys(a.ts), ...Object.keys(b.ts)]) if (t.startsWith(m + '.')) keys.add(t.slice(m.length + 1))
+    for (const k of keys) {
+      const id = m + '.' + k
+      const ta = a.ts[id] || 0, tb = b.ts[id] || 0
+      const va = a[m][k], vb = b[m][k]
+      let v
+      if (ta !== tb) v = ta > tb ? va : vb
+      else if (va === undefined) v = vb
+      else if (vb === undefined) v = va
+      else v = tie[m](va, vb)
+      if (v !== undefined) out[m][k] = v
+      if (Math.max(ta, tb) > 0) out.ts[id] = Math.max(ta, tb)
+    }
+  }
   return out
 }
 

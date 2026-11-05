@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useApp } from '../lib/context.js'
 import { DAYS } from '../data/days.js'
 import { TOTAL, doneCount, nextDay, streak } from '../lib/progress.js'
+import Sync from '../components/Sync.jsx'
 import Backup from '../components/Backup.jsx'
 import { SpeakerIcon } from '../components/Icons.jsx'
 
@@ -79,6 +80,7 @@ export default function Home() {
         </div>
       </section>
 
+      <Sync />
       <Backup />
 
       <section className="card">

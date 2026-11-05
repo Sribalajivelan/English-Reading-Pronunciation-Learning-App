@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AppCtx } from './lib/context.js'
 import { useProgress } from './lib/progress.js'
+import { useSync } from './lib/sync.js'
 import { speak, hasTTS } from './lib/speech.js'
 import { NAV, useRoute } from './lib/router.js'
 import VoicePicker from './components/VoicePicker.jsx'
@@ -12,7 +13,8 @@ import Practice from './views/Practice.jsx'
 import Read from './views/Read.jsx'
 
 export default function App() {
-  const [S, update, saveOk] = useProgress()
+  const [S, update, saveOk, replace] = useProgress()
+  const sync = useSync(S, replace)
   const route = useRoute()
   const [msg, setMsg] = useState('')
   const timer = useRef()
@@ -25,7 +27,7 @@ export default function App() {
   const say = useCallback(t => { if (!speak(t, S.slow, S.voice)) toast(hasTTS ? 'ஒலி இயக்க முடியவில்லை' : 'இந்த உலாவியில் ஒலி வசதி இல்லை') }, [S.slow, S.voice, toast])
   useEffect(() => () => clearTimeout(timer.current), [])
 
-  const ctx = { S, update, say, toast, saveOk }
+  const ctx = { S, update, say, toast, saveOk, sync }
   const cur = route.v === 'day' ? 'plan' : route.v
   const view = { home: <Home />, plan: <Plan />, letters: <Letters />, practice: <Practice />, read: <Read /> }
 
