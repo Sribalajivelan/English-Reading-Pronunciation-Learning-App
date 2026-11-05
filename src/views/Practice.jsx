@@ -64,6 +64,10 @@ export default function Practice() {
           <h3 className="ta">இன்றைய மறுபார்வை</h3>
           <p>{reviewQueue(S).available ? reviewQueue(S).available + ' வார்த்தைகள் காத்திருக்கின்றன. தவறவிட்டவை, மறக்கும் நேரத்தில் மீண்டும் வரும்.' : 'இன்று மறுபார்வை எதுவும் இல்லை.'}</p>
         </a>
+        <a className="mode" href="#spelling" style={{ marginBottom: 12 }}>
+          <h3 className="ta">எழுத்துப்பிழை பயிற்சி</h3>
+          <p>ஒலியைக் கேட்டு, சொல்லை எழுதுங்கள்.</p>
+        </a>
         <div className="modes">
           <button className="mode" type="button" onClick={() => start('listen')}>
             <h3 className="ta">கேட்டுத் தேர்ந்தெடு</h3><p>ஒலியைக் கேட்டு, சரியான ஆங்கிலச் சொல்லைத் தேர்ந்தெடுங்கள்.</p>

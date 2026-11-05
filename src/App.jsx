@@ -3,6 +3,8 @@ import { AppCtx } from './lib/context.js'
 import { useProgress } from './lib/progress.js'
 import { useSync } from './lib/sync.js'
 import { speak, hasTTS } from './lib/speech.js'
+import { loadClips, playClip } from './lib/clips.js'
+import { useOnline } from './lib/pwa.js'
 import { NAV, useRoute } from './lib/router.js'
 import VoicePicker from './components/VoicePicker.jsx'
 import Home from './views/Home.jsx'
@@ -12,11 +14,15 @@ import Letters from './views/Letters.jsx'
 import Practice from './views/Practice.jsx'
 import Read from './views/Read.jsx'
 import Review from './views/Review.jsx'
+import Sounds from './views/Sounds.jsx'
+import Spelling from './views/Spelling.jsx'
+import Record from './views/Record.jsx'
 
 export default function App() {
   const [S, update, saveOk, replace] = useProgress()
   const sync = useSync(S, replace)
   const route = useRoute()
+  const online = useOnline()
   const [msg, setMsg] = useState('')
   const timer = useRef()
 
@@ -25,15 +31,17 @@ export default function App() {
     clearTimeout(timer.current)
     timer.current = setTimeout(() => setMsg(''), 2200)
   }, [])
-  const say = useCallback(t => { if (!speak(t, S.slow, S.voice)) toast(hasTTS ? 'ஒலி இயக்க முடியவில்லை' : 'இந்த உலாவியில் ஒலி வசதி இல்லை') }, [S.slow, S.voice, toast])
+  const say = useCallback((t, clip) => { if (clip && playClip(clip, S.slow)) return; if (!speak(t, S.slow, S.voice)) toast(hasTTS ? 'ஒலி இயக்க முடியவில்லை' : 'இந்த உலாவியில் ஒலி வசதி இல்லை') }, [S.slow, S.voice, toast])
   useEffect(() => () => clearTimeout(timer.current), [])
+  useEffect(() => { loadClips() }, [])
 
   const ctx = { S, update, say, toast, saveOk, sync }
-  const cur = route.v === 'day' ? 'plan' : route.v === 'review' ? 'practice' : route.v
-  const view = { home: <Home />, plan: <Plan />, letters: <Letters />, practice: <Practice />, read: <Read />, review: <Review /> }
+  const cur = { day: 'plan', review: 'practice', spelling: 'practice', sounds: 'letters', record: 'letters' }[route.v] || route.v
+  const view = { home: <Home />, plan: <Plan />, letters: <Letters />, practice: <Practice />, read: <Read />, review: <Review />, sounds: <Sounds />, spelling: <Spelling />, record: <Record /> }
 
   return (
     <AppCtx.Provider value={ctx}>
+      {!online && <div className="offline ta" role="status">இணையம் இல்லை. பாடங்கள் தொடர்ந்து வேலை செய்யும்; குரல் சரிபார்ப்பும் ஒத்திசைவும் இணைப்பு வந்ததும் செயல்படும்.</div>}
       <div className="wrap">
         <div className="top">
           <a className="brand ta" href="#home" style={{ textDecoration: 'none', color: 'inherit' }}>

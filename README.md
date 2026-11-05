@@ -10,11 +10,24 @@ React + Vite, mobile first (tested from 320px phones to desktop).
 - Daily review with spaced repetition: words you miss in quizzes or reviews come back after 1, 2, 4, 7, 15, 30 days
 - "Say it" check: the mic button listens to you say a word or read a sentence and shows what was heard
   (uses the browser's speech recognition: works in Chrome and Edge, and Android Chrome; the button is hidden elsewhere)
+- **Hard sounds** (கடினமான ஒலிகள், Letters tab): mouth-position steps, the common Tamil-speaker mistake and "which word did you hear?" games for F, V/W, Z, TH, short A, I/EE, SH/CH/S, R/L, B/P, D/T and S-clusters
+- **Spelling practice**: hear a word, type it, with a Tamil meaning hint and letter-by-letter feedback
+- **Works offline and installs like an app** (PWA): lessons, review and quizzes work without internet
 - Listen and read quizzes with saved best scores
 - Slow-speech switch; light and dark themes follow the device
 
 Speech uses the browser's built-in English voice, so quality depends on the device.
 Progress is stored in the browser's localStorage (per device).
+
+## Recorded letter sounds (optional)
+
+Phone voices cannot say a bare "buh" or "fff" cleanly, so letter sound buttons play a recording when one exists
+and fall back to the device voice otherwise.
+
+1. Open the app at `#record` (for example `https://<site>/#record`) on a phone. Record each sound; use a quiet room.
+2. Tap **Zip பதிவிறக்கு** and unzip the file into a folder.
+3. Run `./scripts/convert-clips.sh <folder>` (needs ffmpeg). It writes `public/audio/*.mp3` and `public/audio/manifest.json`.
+4. Commit `public/audio` and push. Any sound without a clip keeps using the device voice.
 
 ## Run locally
 

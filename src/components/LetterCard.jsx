@@ -17,7 +17,7 @@ export default function LetterCard({ L }) {
       </div>
       <div className="snds" aria-label={L + ' sounds'}>
         {sounds.map(s => (
-          <button key={s[0]} type="button" onClick={() => say(s[2])}><SpeakerIcon /><span className="ta">{s[1]}</span><small>{s[0]}</small></button>
+          <button key={s[0]} type="button" onClick={() => say(s[2], L + '-' + s[0])}><SpeakerIcon /><span className="ta">{s[1]}</span><small>{s[0]}</small></button>
         ))}
       </div>
       <div className="ex">

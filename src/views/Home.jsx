@@ -3,6 +3,7 @@ import { useApp } from '../lib/context.js'
 import { DAYS } from '../data/days.js'
 import { TOTAL, doneCount, nextDay, streak } from '../lib/progress.js'
 import { reviewQueue, srsStats } from '../lib/srs.js'
+import Install from '../components/Install.jsx'
 import Sync from '../components/Sync.jsx'
 import Backup from '../components/Backup.jsx'
 import { SpeakerIcon } from '../components/Icons.jsx'
@@ -100,6 +101,7 @@ export default function Home() {
         </div>
       </section>
 
+      <Install />
       <Sync />
       <Backup />
 

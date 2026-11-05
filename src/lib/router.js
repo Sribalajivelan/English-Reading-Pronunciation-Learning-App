@@ -6,7 +6,7 @@ function parse() {
   const h = (window.location.hash || '#home').slice(1)
   const m = h.match(/^day-(\d+)$/)
   if (m) return { v: 'day', n: +m[1] }
-  if (h === 'review') return { v: 'review' }
+  if (['review', 'sounds', 'spelling', 'record'].includes(h)) return { v: h }
   return { v: NAV.some(x => x[0] === h) ? h : 'home' }
 }
 
