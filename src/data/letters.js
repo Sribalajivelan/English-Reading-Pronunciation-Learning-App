@@ -6,7 +6,7 @@ export const TB={B:['ப',''],C:['க',''],D:['ட',''],F:['ஃப',''],G:['க'
 export const SP={B:'b',C:'k',D:'d',F:'f',G:'g',H:'h',J:'j',K:'k',L:'l',M:'m',N:'n',P:'p',Q:'kw',R:'r',S:'s',T:'t',V:'v',W:'w',X:'ks',Y:'y',Z:'z'};
 export const VS=[['a','','ah'],['e','ெ','eh'],['i','ி','ih'],['o','ொ','oh'],['u','ு','uh']];
 /* sound buttons: [label, Tamil, spoken respelling] (respellings approximate what a speech voice can say) */
-export const VSND={A:[['short','அ','ah'],['long','ஏ','ay']],E:[['short','எ','eh'],['long','ஈ','ee']],I:[['short','இ','ih'],['long','ஐ','eye']],O:[['short','ஒ','aw'],['long','ஓ','oh']],U:[['short','உ','uh'],['long','யூ','you']]};
+export const VSND={A:[['short','அ','uh'],['apple','ஆ','ah'],['long','ஏ','ay']],E:[['short','எ','eh'],['long','ஈ','ee']],I:[['short','இ','ih'],['long','ஐ','eye']],O:[['short','ஒ','aw'],['long','ஓ','oh']],U:[['short','உ','uh'],['long','யூ','you']]};
 export const CSND={B:['buh'],C:['kuh','sss'],D:['duh'],F:['fff'],G:['guh'],H:['huh'],J:['juh'],K:['kuh'],L:['lll'],M:['mmm'],N:['nnn'],P:['puh'],Q:['kwuh'],R:['rrr'],S:['sss'],T:['tuh'],V:['vvv'],W:['wuh'],X:['ks'],Y:['yuh'],Z:['zzz']};
 export const LETTERS=LET.split(';').map(s=>{const p=s.split('|');return{l:p[0],ta:p[1],ex:[[p[2],p[3]],p[4]?[p[4],p[5]]:null].filter(Boolean),vowel:'AEIOU'.includes(p[0])}});
 export const LMAP=Object.fromEntries(LETTERS.map(x=>[x.l,x]));
