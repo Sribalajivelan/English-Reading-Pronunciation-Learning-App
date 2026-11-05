@@ -1,0 +1,708 @@
+<title>Angilam Padippom</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Thambi+2:wght@500;700;800&family=Lexend:wght@400;500;600&family=Noto+Sans+Tamil:wght@400;500;700&display=swap">
+<style>
+/* Layout: one column "workbook" (max 940px); bottom tab bar; Tamil is the voice, English is the thing being learned. */
+:root{
+  --bg:#F3F7F5; --surface:#FFFFFF; --soft:#E7F0EC; --ink:#12302B; --muted:#58706A; --line:#D3E0DA;
+  --accent:#0E6B5B; --on-accent:#FFFFFF; --mark:#F0A30A; --mark-soft:#FCEFCB; --mark-ink:#6B4500;
+  --good:#1E8A4C; --bad:#C23B2E; --bad-soft:#F9E1DD; --good-soft:#DDF1E4;
+  --f-head:'Baloo Thambi 2','Noto Sans Tamil',sans-serif;
+  --f-body:'Lexend','Noto Sans Tamil',system-ui,sans-serif;
+  --f-ta:'Noto Sans Tamil','Lexend',sans-serif;
+  --shadow:0 1px 0 rgba(18,48,43,.06),0 8px 24px -12px rgba(18,48,43,.18);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0C1A17; --surface:#132622; --soft:#1B342E; --ink:#E5F1EC; --muted:#94ADA5; --line:#27443C;
+  --accent:#4FC3A8; --on-accent:#06231D; --mark:#F5B83A; --mark-soft:#3A2E10; --mark-ink:#F6D58A;
+  --good:#5BD08A; --bad:#FF8A7C; --bad-soft:#40201C; --good-soft:#163A26; --shadow:none; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0C1A17; --surface:#132622; --soft:#1B342E; --ink:#E5F1EC; --muted:#94ADA5; --line:#27443C;
+  --accent:#4FC3A8; --on-accent:#06231D; --mark:#F5B83A; --mark-soft:#3A2E10; --mark-ink:#F6D58A;
+  --good:#5BD08A; --bad:#FF8A7C; --bad-soft:#40201C; --good-soft:#163A26; --shadow:none; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;
+  padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));
+  padding-block:0 96px;margin:0}
+.wrap{max-width:940px;margin-inline:auto}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--mark);outline-offset:2px;border-radius:6px}
+h1,h2,h3{font-family:var(--f-head);line-height:1.2;margin:0;text-wrap:balance}
+h2{font-size:1.5rem;font-weight:700}
+h3{font-size:1.15rem;font-weight:700}
+p{margin:0}
+.ta{font-family:var(--f-ta)}
+.muted{color:var(--muted)}
+.eyebrow{font-size:.75rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.stack{display:flex;flex-direction:column;gap:16px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+
+/* header */
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:16px 8px;flex-wrap:wrap}
+.brand{display:flex;flex-direction:column}
+.brand b{font-family:var(--f-head);font-size:1.45rem;font-weight:800;line-height:1.1}
+.brand span{font-size:.78rem;color:var(--muted)}
+.slow{display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px 6px 8px;font-size:.85rem;font-family:var(--f-ta)}
+.slow i{width:34px;height:20px;border-radius:99px;background:var(--line);position:relative;transition:background .2s}
+.slow i::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--surface);box-shadow:0 0 0 1px var(--muted);transition:transform .2s}
+.slow[aria-pressed="true"] i{background:var(--accent)}
+.slow[aria-pressed="true"] i::after{transform:translateX(14px)}
+
+/* nav */
+nav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);
+  padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+nav .in{max-width:940px;margin-inline:auto;display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+nav a{display:flex;flex-direction:column;align-items:center;gap:0;padding:6px 2px;border-radius:12px;text-decoration:none;color:var(--muted);font-family:var(--f-ta);font-size:.82rem;font-weight:500;line-height:1.25}
+nav a small{font-family:var(--f-body);font-size:.66rem;letter-spacing:.04em;opacity:.85}
+nav a[aria-current="page"]{background:var(--soft);color:var(--accent)}
+nav a[aria-current="page"]{font-weight:700}
+
+/* cards */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow)}
+.plain{background:var(--soft);border-radius:16px;padding:16px}
+.btn{border:0;background:var(--accent);color:var(--on-accent);border-radius:12px;padding:11px 18px;font-weight:600;font-family:var(--f-ta);display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-size:.95rem}
+.btn svg{width:18px;height:18px;flex:none}
+.btn.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.btn.mark{background:var(--mark);color:#3a2600}
+.btn[disabled]{opacity:.45;cursor:default}
+.spk{width:34px;height:34px;border-radius:50%;border:0;background:var(--soft);color:var(--accent);display:inline-grid;place-items:center;flex:none}
+.spk svg{width:18px;height:18px}
+
+/* hero apple */
+.hero{padding:24px 20px 22px;background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}
+.hero h1{font-size:clamp(1.6rem,5.5vw,2.4rem);font-weight:800}
+.hero .lead{margin-top:6px;color:var(--muted);font-family:var(--f-ta)}
+.tiles{display:flex;gap:8px;margin:20px 0 14px;flex-wrap:nowrap}
+.tile{flex:1 1 0;min-width:0;max-width:96px;text-align:center;padding:12px 2px 10px;border-radius:14px;background:var(--soft);border:2px solid transparent;transition:background .25s,border-color .25s,transform .25s}
+.tile b{display:block;font-size:clamp(1.6rem,8vw,2.4rem);font-weight:600;line-height:1.1}
+.tile span{display:block;font-family:var(--f-ta);font-weight:700;font-size:clamp(1rem,4.6vw,1.45rem);color:var(--accent);margin-top:4px}
+.tile.silent{background:transparent;border:2px dashed var(--muted)}
+.tile.silent b{color:var(--muted)}
+.tile.silent span{color:var(--muted);font-size:clamp(.62rem,2.6vw,.8rem);font-weight:500;margin-top:10px}
+.hero.play .tile{background:var(--mark-soft);border-color:var(--mark);transform:translateY(-4px)}
+.hero.play .tile.silent{background:transparent;border-color:var(--muted);transform:none}
+.hero.play .tile:nth-child(2){transition-delay:.35s}.hero.play .tile:nth-child(3){transition-delay:.7s}
+.hero.play .tile:nth-child(4){transition-delay:1.05s}
+.result{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.result .big{font-family:var(--f-head);font-size:2.2rem;font-weight:800;color:var(--accent);line-height:1}
+.result .eq{color:var(--muted)}
+.notes{margin:14px 0 0;padding:0;list-style:none;display:grid;gap:6px;font-family:var(--f-ta);font-size:.95rem}
+.notes li{display:flex;gap:10px}
+.notes li::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:var(--mark);margin-top:.6em}
+
+/* progress */
+.prog{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center}
+.ring{width:112px;height:112px;position:relative}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .c{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring .c b{font-family:var(--f-head);font-size:1.9rem;font-weight:800;line-height:1}
+.ring .c span{font-size:.7rem;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stat b{display:block;font-family:var(--f-head);font-size:1.5rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:.78rem;color:var(--muted);font-family:var(--f-ta)}
+.next{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.next .dn{font-family:var(--f-head);font-weight:800;color:var(--mark-ink);background:var(--mark-soft);border-radius:10px;padding:2px 10px;font-size:.9rem;display:inline-block}
+.routine{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.routine div{background:var(--soft);border-radius:14px;padding:14px}
+.routine b{font-family:var(--f-head);font-size:1.5rem;color:var(--accent);display:block;line-height:1}
+.routine span{font-family:var(--f-ta);font-size:.92rem}
+.bars{display:grid;gap:10px}
+.bar{display:grid;grid-template-columns:minmax(0,9.5rem) 1fr auto;gap:12px;align-items:center;font-size:.85rem}
+.bar .tr{height:10px;border-radius:99px;background:var(--soft);overflow:hidden}
+.bar .tr i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.bar em{font-style:normal;font-variant-numeric:tabular-nums;color:var(--muted)}
+details.tip{border-top:1px solid var(--line);padding:12px 0}
+details.tip summary{cursor:pointer;font-family:var(--f-ta);font-weight:700}
+details.tip p,details.tip ul{margin-top:8px;font-family:var(--f-ta);font-size:.95rem;color:var(--muted)}
+details.tip ul{padding-left:20px}
+
+/* plan */
+.week{display:flex;flex-direction:column;gap:12px}
+.week header{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.days{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.day{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;text-decoration:none;color:inherit;min-width:0}
+.day .n{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--soft);font-family:var(--f-head);font-weight:800;font-size:1.05rem;font-variant-numeric:tabular-nums}
+.day.done .n{background:var(--accent);color:var(--on-accent)}
+.day.cur{border-color:var(--mark);box-shadow:0 0 0 2px var(--mark-soft)}
+.day div{min-width:0}
+.day b{display:block;font-weight:500;font-size:.9rem;line-height:1.3}
+.day span{font-family:var(--f-ta);font-size:.85rem;color:var(--muted);display:block;line-height:1.35}
+.day .ck{width:22px;height:22px;color:var(--good)}
+
+/* day view */
+.crumb{display:inline-flex;gap:6px;align-items:center;color:var(--accent);text-decoration:none;font-family:var(--f-ta);font-weight:500;padding-block:8px}
+.dhead{display:flex;flex-direction:column;gap:6px}
+.dhead .pill{align-self:flex-start;background:var(--mark-soft);color:var(--mark-ink);font-weight:600;font-size:.8rem;border-radius:99px;padding:3px 12px}
+.dhead h2{font-size:clamp(1.5rem,5vw,2rem)}
+.dhead .tt{font-family:var(--f-head);font-size:1.15rem;color:var(--accent);font-weight:700}
+.tasks{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.tasks button{width:100%;display:grid;grid-template-columns:auto 1fr;gap:12px;text-align:left;background:var(--soft);border:0;border-radius:12px;padding:12px;align-items:start}
+.tasks .bx{width:24px;height:24px;border-radius:8px;border:2px solid var(--muted);display:grid;place-items:center;margin-top:1px}
+.tasks .bx svg{width:16px;height:16px;opacity:0}
+.tasks .on .bx{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.tasks .on .bx svg{opacity:1}
+.tasks .on .te{text-decoration:line-through;text-decoration-color:var(--muted);color:var(--muted)}
+.tasks .te{display:block;font-size:.95rem;line-height:1.4}
+.tasks .tt2{display:block;font-family:var(--f-ta);font-size:.88rem;color:var(--muted);margin-top:2px}
+.sec{display:flex;flex-direction:column;gap:12px}
+.sec>h3{display:flex;align-items:center;gap:10px}
+.sec>h3 small{font-family:var(--f-ta);font-size:.8rem;font-weight:400;color:var(--muted)}
+.words{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.w{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;min-width:0;position:relative}
+.w:active{background:var(--soft)}
+.w .en{font-size:1.25rem;font-weight:500;overflow-wrap:anywhere;line-height:1.25}
+.w .tam{font-family:var(--f-ta);font-weight:700;color:var(--accent);font-size:1.02rem}
+.w .hint{font-size:.75rem;color:var(--muted);overflow-wrap:anywhere}
+.w .dots{display:flex;gap:4px;margin-top:6px}
+.w .dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.w .dots i.f{background:var(--mark)}
+.w .sp{position:absolute;top:10px;right:10px;width:18px;height:18px;color:var(--muted)}
+.repnote{font-family:var(--f-ta);font-size:.85rem;color:var(--muted)}
+.pats{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.pat{background:var(--mark-soft);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;text-align:left;border:0;min-width:0}
+.pat .p{font-family:var(--f-head);font-weight:800;font-size:1.5rem;color:var(--mark-ink);line-height:1.1}
+.pat .pt{font-family:var(--f-ta);font-size:.9rem;font-weight:500;color:var(--ink)}
+.pat .px{font-size:.85rem;color:var(--muted)}
+.pat .px b{font-weight:500;color:var(--ink)}
+.pairs{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.pair{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px}
+.pair button{background:var(--soft);border:0;border-radius:10px;padding:8px;text-align:center;line-height:1.3;min-width:0}
+.pair button b{display:block;font-weight:500;overflow-wrap:anywhere}
+.pair button span{font-family:var(--f-ta);font-size:.82rem;color:var(--accent);font-weight:700}
+.pair .ar{color:var(--muted)}
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.lc{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.lc .h{display:flex;gap:12px;align-items:center}
+.lc .lb{border:0;background:var(--soft);border-radius:12px;width:72px;height:64px;font-family:var(--f-head);font-weight:800;font-size:2rem;color:var(--accent);flex:none}
+.lc .lb small{font-size:1.25rem;font-weight:600}
+.lc .snd{font-family:var(--f-ta);font-weight:700;font-size:1.15rem;line-height:1.25}
+.lc .snd small{display:block;font-weight:400;font-size:.72rem;color:var(--muted)}
+.ex{display:flex;gap:8px;flex-wrap:wrap}
+.ex button{border:1px solid var(--line);background:transparent;border-radius:10px;padding:5px 10px;line-height:1.25;text-align:left}
+.ex button b{font-weight:500;margin-right:6px}
+.ex button span{font-family:var(--f-ta);color:var(--accent);font-weight:700;font-size:.85rem}
+.cv{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.cv button{border:0;background:var(--mark-soft);color:var(--mark-ink);border-radius:9px;padding:5px 0 4px;line-height:1.2;min-width:0}
+.cv button b{display:block;font-size:.85rem;font-weight:500}
+.cv button span{display:block;font-family:var(--f-ta);font-size:.95rem;font-weight:700}
+.lc .tipx{font-family:var(--f-ta);font-size:.82rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
+
+/* reader */
+.pass{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.pass .ph{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.line{display:flex;gap:10px;align-items:flex-start}
+.line .tx{flex:1;min-width:0}
+.line .en{font-size:1.2rem;line-height:1.75}
+.line .en button{border:0;background:transparent;padding:0 1px;border-radius:5px;font-size:inherit;font-weight:500;font-family:inherit}
+.line .en button:hover{background:var(--mark-soft)}
+.line .en .pu{color:var(--bad);font-weight:700;margin-right:3px}
+.line .rd{font-family:var(--f-ta);color:var(--accent);font-weight:500;font-size:.95rem}
+.line .mn{font-family:var(--f-ta);color:var(--muted);font-size:.88rem}
+.qa{background:var(--soft);border-radius:12px;padding:12px;font-family:var(--f-ta);font-size:.92rem;display:grid;gap:6px}
+.qa .ans{color:var(--good);font-weight:700}
+.qa button{justify-self:start}
+.rate{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rate button{border:1.5px solid var(--line);background:transparent;border-radius:12px;padding:10px 6px;font-family:var(--f-ta);font-size:.88rem;line-height:1.3}
+.rate button[aria-pressed="true"]{border-color:var(--accent);background:var(--soft);font-weight:700;color:var(--accent)}
+.dnav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.counter{display:flex;align-items:center;gap:16px}
+.counter b{font-family:var(--f-head);font-size:2.2rem;font-variant-numeric:tabular-nums;min-width:3ch;text-align:center}
+.counter button{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--accent);background:transparent;color:var(--accent);font-size:1.5rem;line-height:1}
+.timer{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.timer b{font-family:var(--f-head);font-size:2.2rem;font-variant-numeric:tabular-nums}
+
+/* practice */
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.mode{text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.mode:hover{border-color:var(--accent)}
+.mode h3{color:var(--accent)}
+.mode .ta,.mode p{font-family:var(--f-ta);font-size:.9rem;color:var(--muted)}
+.seg{display:inline-flex;background:var(--soft);border-radius:12px;padding:4px;gap:4px}
+.seg button{border:0;background:transparent;border-radius:9px;padding:8px 14px;font-family:var(--f-ta);font-size:.9rem}
+.seg button[aria-pressed="true"]{background:var(--surface);font-weight:700;color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.qtop{display:flex;justify-content:space-between;align-items:center;font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.qbar{height:8px;border-radius:99px;background:var(--soft);overflow:hidden}
+.qbar i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.qprompt{display:flex;flex-direction:column;align-items:center;gap:10px;padding-block:8px;text-align:center}
+.qprompt .bigspk{width:84px;height:84px;border-radius:50%;border:0;background:var(--accent);color:var(--on-accent);display:grid;place-items:center}
+.qprompt .bigspk svg{width:38px;height:38px}
+.qprompt .qw{font-size:clamp(2rem,9vw,3rem);font-weight:500;line-height:1.1;overflow-wrap:anywhere}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.opt{border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:14px;font-size:1.15rem;font-family:var(--f-body);min-height:56px}
+.opt.ta{font-family:var(--f-ta);font-weight:700}
+.opt.ok{background:var(--good-soft);border-color:var(--good)}
+.opt.no{background:var(--bad-soft);border-color:var(--bad)}
+.fb{font-family:var(--f-ta);font-weight:700;text-align:center;min-height:1.6em}
+.score{font-family:var(--f-head);font-size:3.4rem;font-weight:800;color:var(--accent);line-height:1}
+
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-family:var(--f-ta);font-size:.9rem;z-index:30;max-width:calc(100% - 32px)}
+.celebrate{background:linear-gradient(135deg,var(--mark-soft),var(--soft));border-radius:18px;padding:20px;text-align:center}
+.celebrate h3{font-size:1.5rem}
+@media (max-width:520px){
+  .prog{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .bar{grid-template-columns:1fr auto}.bar .tr{grid-column:1/-1;order:3}
+  .card{padding:16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <div class="top">
+    <a class="brand ta" href="#home" style="text-decoration:none;color:inherit"><b>ஆங்கிலம் படிப்போம்</b><span>30-Day English Reading &amp; Pronunciation</span></a>
+    <button class="slow" id="slow" aria-pressed="false" type="button"><i></i>மெதுவான ஒலி</button>
+  </div>
+  <main id="app" class="stack" tabindex="-1"></main>
+</div>
+<nav aria-label="Main"><div class="in" id="nav"></div></nav>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+/* ---------- helpers ---------- */
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let S={};try{S=JSON.parse(localStorage.getItem('ap-v1')||'{}')||{}}catch(e){S={}}
+['done','tasks','rating','best','counter','speed'].forEach(k=>S[k]=S[k]||{});
+const save=()=>{try{localStorage.setItem('ap-v1',JSON.stringify(S))}catch(e){}};
+const ICON={
+ spk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>',
+ chk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+ back:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>'
+};
+const spkBtn=(t,label)=>`<button class="spk" type="button" data-say="${esc(t)}" aria-label="${esc(label||'Listen')}">${ICON.spk}</button>`;
+
+/* speech */
+let voices=[];const hasTTS='speechSynthesis' in window;
+if(hasTTS){const lv=()=>{voices=speechSynthesis.getVoices()};lv();speechSynthesis.onvoiceschanged=lv}
+function say(t){
+  if(!hasTTS){toast('இந்த உலாவியில் ஒலி வசதி இல்லை');return}
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);
+    const v=voices.find(v=>v.lang==='en-IN')||voices.find(v=>v.lang==='en-US')||voices.find(v=>/^en/i.test(v.lang));
+    if(v){u.voice=v;u.lang=v.lang}else u.lang='en-US';
+    u.rate=S.slow?0.55:0.9;speechSynthesis.speak(u)}catch(e){toast('ஒலி இயக்க முடியவில்லை')}
+}
+let tt;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2200)}
+
+/* ---------- letter data ---------- */
+const LN={A:'ay',B:'bee',C:'see',D:'dee',E:'ee',F:'eff',G:'jee',H:'aitch',I:'eye',J:'jay',K:'kay',L:'el',M:'em',N:'en',O:'oh',P:'pee',Q:'cue',R:'ar',S:'ess',T:'tee',U:'you',V:'vee',W:'double you',X:'ex',Y:'why',Z:'zed'};
+const LET='A|அ / ஆ / ஏ|cat|கேட்|cake|கேக்;E|எ / ஈ|pen|பென்|me|மீ;I|இ / ஐ|sit|சிட்|ice|ஐஸ்;O|ஒ / ஓ|hot|ஹாட்|go|கோ;U|உ / யூ|cup|கப்|cute|க்யூட்;'+
+'B|ப்|book|புக்;C|க் / ஸ்|cat|கேட்|city|சிட்டி;D|ட்|dog|டாக்;F|ஃப்|fish|பிஷ்;G|க்|go|கோ;H|ஹ்|hat|ஹேட்;J|ஜ்|job|ஜாப்;K|க்|king|கிங்;L|ல்|love|லவ்;M|ம்|man|மேன்;N|ன்|name|நேம்;P|ப்|pen|பென்;Q|க்வ்|queen|க்வீன்;R|ர்|red|ரெட்;S|ஸ்|sun|சன்;T|ட்|top|டாப்;V|வ்|voice|வாய்ஸ்;W|வ்|water|வாட்டர்;X|க்ஸ்|box|பாக்ஸ்;Y|ய்|yes|யெஸ்;Z|ஸ் (ஜ்-ஸ் அதிர்வு)|zero|ஸீரோ';
+const LTIP={C:'a, o, u முன் "க்"; e, i, y முன் "ஸ்" (city).',F:'மேல் பற்கள் கீழ் உதட்டைத் தொட்டு ஊதவும் (ஃ). திட்டத்தில் "ப்" என்று இருந்தாலும் இதுவே சரியான ஒலி.',V:'மேல் பற்கள் கீழ் உதட்டைத் தொடும். W-ல் உதடுகள் உருண்டிருக்கும்.',W:'உதடுகளை உருட்டி "வு" போல தொடங்கவும்.',Q:'எப்போதும் U உடன் வரும்: qu = க்வ்.',R:'நாக்கு மேலண்ணத்தைத் தொடாது. தமிழ் "ர்" போல உருட்ட வேண்டாம்.',Z:'S போல, ஆனால் தொண்டையில் அதிர்வு இருக்கும்.',D:'T-ஐ விட மென்மையாக.',T:'D-ஐ விட அழுத்தமாக.',H:'மூச்சை வெளியே விடுங்கள்.',J:'"ஜ" போல.',X:'பெரும்பாலும் சொல்லின் முடிவில் "க்ஸ்".',G:'gem, giant-ல் "ஜ்" ஆகவும் வரும்.'};
+const TB={B:['ப',''],C:['க',''],D:['ட',''],F:['ஃப',''],G:['க',''],H:['ஹ',''],J:['ஜ',''],K:['க',''],L:['ல',''],M:['ம',''],N:['ன',''],P:['ப',''],Q:['வ','க்'],R:['ர',''],S:['ஸ',''],T:['ட',''],V:['வ',''],W:['வ',''],X:['ஸ','க்'],Y:['ய',''],Z:['ஸ','']};
+const SP={B:'b',C:'k',D:'d',F:'f',G:'g',H:'h',J:'j',K:'k',L:'l',M:'m',N:'n',P:'p',Q:'kw',R:'r',S:'s',T:'t',V:'v',W:'w',X:'ks',Y:'y',Z:'z'};
+const VS=[['a','','ah'],['e','ெ','eh'],['i','ி','ih'],['o','ொ','oh'],['u','ு','uh']];
+const LETTERS=LET.split(';').map(s=>{const p=s.split('|');return{l:p[0],ta:p[1],ex:[[p[2],p[3]],p[4]?[p[4],p[5]]:null].filter(Boolean),vowel:'AEIOU'.includes(p[0])}});
+const LMAP=Object.fromEntries(LETTERS.map(x=>[x.l,x]));
+function letterCard(L){
+  const x=LMAP[L];
+  const cv=x.vowel?'':`<div class="cv" aria-label="${L} + vowels">${VS.map(v=>{const b=TB[L];return `<button type="button" data-say="${SP[L]+v[2]}"><b>${L.toLowerCase()}${v[0]}</b><span>${b[1]+b[0]+v[1]}</span></button>`}).join('')}</div>`;
+  return `<article class="lc"><div class="h"><button class="lb" type="button" data-say="${LN[L]}" aria-label="Letter ${L}">${L}<small>${L.toLowerCase()}</small></button>
+  <div class="snd">${esc(x.ta)}<small>ஒலி · ${x.vowel?'vowel':'consonant'}</small></div></div>
+  <div class="ex">${x.ex.map(e=>`<button type="button" data-say="${e[0]}"><b>${e[0]}</b><span>${e[1]}</span></button>`).join('')}</div>${cv}
+  ${LTIP[L]?`<div class="tipx">${LTIP[L]}</div>`:''}</article>`;
+}
+
+/* ---------- day data ---------- */
+const W=s=>s.split(';').map(x=>{const p=x.split('|');return{en:p[0],ta:p[1],h:p[2]||''}});
+const P=s=>s.split(';').map(x=>{const p=x.split('|');return{p:p[0],ta:p[1],ex:p[2],exta:p[3]||''}});
+const PAIR=s=>s.split(';').map(x=>x.split('|'));
+const DAYS={};
+function D(n,t,ta,tasks,o={}){DAYS[n]=Object.assign({n,t,ta,tasks,mins:n<=7?30:n<=14?40:n<=21?45:50},o)}
+
+D(1,'Basic Vowel Sounds','அடிப்படை உயிர் ஒலிகள்',[
+ ['Learn 5 vowel sounds: A, E, I, O, U','A, E, I, O, U ஆகிய 5 உயிர் ஒலிகளைக் கற்கவும்'],
+ ['Practice simple words: cat, pen, sit, hot, cup','எளிய வார்த்தைகளைப் பயிலவும்: cat, pen, sit, hot, cup'],
+ ['Write each vowel 10 times and say it aloud','ஒவ்வொரு எழுத்தையும் 10 முறை எழுதி சத்தமாகச் சொல்லவும்'],
+ ['Listen to the vowel sounds (tap the cards)','அட்டைகளைத் தொட்டு ஒலியைக் கேளுங்கள்']],
+ {letters:'AEIOU',words:W('cat|கேட்;pen|பென்;sit|சிட்;hot|ஹாட்;cup|கப்;cake|கேக்;me|மீ;ice|ஐஸ்;go|கோ;cute|க்யூட்')});
+D(2,'Common Consonants (Part 1)','பொதுவான மெய்யெழுத்துகள் (பகுதி 1)',[
+ ['Learn: B, C, D, F, G, H','கற்கவும்: B, C, D, F, G, H'],
+ ['Practice words: book, cat, dog, fish, go, hat','வார்த்தைகள்: book, cat, dog, fish, go, hat'],
+ ['Combine vowels + consonants (ba, be, bi, bo, bu)','உயிர் + மெய் சேர்த்துப் படிக்கவும் (ba, be, bi, bo, bu)'],
+ ['Record yourself on your phone and listen back','உங்கள் ஃபோனில் பதிவு செய்து திரும்பக் கேளுங்கள்']],
+ {letters:'BCDFGH',words:W('book|புக்;cat|கேட்;dog|டாக்;fish|பிஷ்;go|கோ;hat|ஹேட்')});
+D(3,'Common Consonants (Part 2)','பொதுவான மெய்யெழுத்துகள் (பகுதி 2)',[
+ ['Learn: J, K, L, M, N, P','கற்கவும்: J, K, L, M, N, P'],
+ ['Practice words: job, king, love, man, name, pen','வார்த்தைகள்: job, king, love, man, name, pen'],
+ ['Make 20 simple consonant + vowel combinations','20 எளிய மெய் + உயிர் சேர்க்கைகளை உருவாக்கவும்'],
+ ['Practice for 15 minutes','15 நிமிடம் பயிற்சி செய்யவும்']],
+ {letters:'JKLMNP',words:W('job|ஜாப்;king|கிங்;love|லவ்;man|மேன்;name|நேம்;pen|பென்')});
+D(4,'Remaining Consonants','மீதமுள்ள மெய்யெழுத்துகள்',[
+ ['Learn: Q, R, S, T, V, W, X, Y, Z','கற்கவும்: Q, R, S, T, V, W, X, Y, Z'],
+ ['Practice words: queen, red, sun, top, voice, water, box, yes, zero','வார்த்தைகளைப் பயிலவும்'],
+ ['Say the whole alphabet, A to Z','A முதல் Z வரை முழு அகரவரிசையைச் சொல்லவும்'],
+ ['Test yourself on all 26 letters (see Practice tab)','26 எழுத்துகளிலும் உங்களைச் சோதிக்கவும் (பயிற்சி பக்கம்)']],
+ {letters:'QRSTVWXYZ',words:W('queen|க்வீன்;red|ரெட்;sun|சன்;top|டாப்;voice|வாய்ஸ்;water|வாட்டர்;box|பாக்ஸ்;yes|யெஸ்;zero|ஸீரோ')});
+D(5,'Simple 3-Letter Words','எளிய 3 எழுத்து வார்த்தைகள்',[
+ ['Read 20 three-letter words','20 மூன்றெழுத்து வார்த்தைகளைப் படிக்கவும்'],
+ ['Blend the sounds together: c-a-t → cat','ஒலிகளை இணைக்கவும்: c-a-t → கேட்'],
+ ['Write each word and say it aloud','ஒவ்வொரு வார்த்தையையும் எழுதி சத்தமாகச் சொல்லவும்']],
+ {words:W('cat|கேட்;dog|டாக்;pen|பென்;sun|சன்;box|பாக்ஸ்;man|மேன்;run|ரன்;sit|சிட்;hot|ஹாட்;cup|கப்;bat|பேட்;bed|பெட்;big|பிக்;hat|ஹேட்;jam|ஜேம்;leg|லெக்;map|மேப்;net|நெட்;pig|பிக்;bus|பஸ்')});
+D(6,'4-Letter Words','4 எழுத்து வார்த்தைகள்',[
+ ['Read 25 four-letter words','25 நான்கெழுத்து வார்த்தைகளைப் படிக்கவும்'],
+ ['Connect the sounds smoothly','ஒலிகளைத் தடையின்றி இணைக்கவும்'],
+ ['Write each word and say it aloud','எழுதி சத்தமாகச் சொல்லவும்']],
+ {words:W('book|புக்;fish|பிஷ்;name|நேம்;love|லவ்;king|கிங்;zero|ஸீரோ;come|கம்;make|மேக்;take|டேக்;like|லைக்;home|ஹோம்;good|குட்;food|ஃபுட்;moon|மூன்;rain|ரெய்ன்;road|ரோட்;hand|ஹேண்ட்;jump|ஜம்ப்;milk|மில்க்;help|ஹெல்ப்;door|டோர்;rice|ரைஸ்;five|ஃபைவ்;nine|நைன்;play|ப்ளே')});
+D(7,'Review & Assessment','மறுபார்வை & மதிப்பீடு',[
+ ['Test all letters and sounds (Letters tab)','எல்லா எழுத்துகள், ஒலிகளையும் சோதிக்கவும்'],
+ ['Read the 50 words below','கீழே உள்ள 50 வார்த்தைகளைப் படிக்கவும்'],
+ ['Self-assessment: what needs more practice?','சுய மதிப்பீடு: எதில் அதிக பயிற்சி தேவை?'],
+ ['Plan next week’s improvements','அடுத்த வாரத்துக்கான மேம்பாட்டைத் திட்டமிடவும்']],
+ {review:[1,2,3,4,5,6],limit:50,rate:1});
+D(8,'Silent Letters','மௌன எழுத்துகள் அறிமுகம்',[
+ ['Learn common silent letters: knife (k), lamb (b), write (w)','பொதுவான மௌன எழுத்துகள்: knife (k), lamb (b), write (w)'],
+ ['Practice 10 words with silent letters','மௌன எழுத்துள்ள 10 வார்த்தைகளைப் பயிலவும்'],
+ ['Find the silent letter in each word','ஒவ்வொரு வார்த்தையிலும் மௌன எழுத்தைக் கண்டறியவும்']],
+ {pats:P('kn|k மௌனம் → ந்|knife|நைஃப்;mb|b மௌனம்|lamb|லேம்;wr|w மௌனம்|write|ரைட்;gh|gh மௌனம்|night|நைட்;lk|l மௌனம்|walk|வாக்;mb|b மௌனம்|comb|கோம்'),
+  words:W('knife|நைஃப்|k is silent;lamb|லேம்|b is silent;write|ரைட்|w is silent;know|நோ|k is silent;knee|நீ|k is silent;comb|கோம்|b is silent;climb|க்ளைம்|b is silent;hour|அவர்|h is silent;night|நைட்|gh is silent;light|லைட்|gh is silent;wrong|ராங்|w is silent;thumb|தம்|b is silent;listen|லிசன்|t is silent;walk|வாக்|l is silent;talk|டாக்|l is silent')});
+D(9,'Common Letter Combinations','பொதுவான எழுத்துச் சேர்க்கைகள்',[
+ ['Learn: th, ch, sh, ph, ng','கற்கவும்: th, ch, sh, ph, ng'],
+ ['Practice: think, chair, ship, phone, sing','பயிலவும்: think, chair, ship, phone, sing'],
+ ['Read 20 words with these combinations','இந்த சேர்க்கைகளுடன் 20 வார்த்தைகளைப் படிக்கவும்']],
+ {pats:P('th|த் (நாக்கு பற்களுக்கிடையே)|think|திங்க்;ch|ச்|chair|சேர்;sh|ஷ்|ship|ஷிப்;ph|ஃப்|phone|ஃபோன்;ng|ங்|sing|சிங்'),
+  words:W('think|திங்க்;chair|சேர்;ship|ஷிப்;phone|ஃபோன்;sing|சிங்;this|திஸ்;that|தேட்;thank|தேங்க்;chip|சிப்;cheese|சீஸ்;church|சர்ச்;shop|ஷாப்;shirt|ஷர்ட்;photo|ஃபோட்டோ;dolphin|டால்ஃபின்;long|லாங்;song|சாங்;bring|ப்ரிங்;math|மேத்;watch|வாட்ச்')});
+D(10,'Double Letters','இரட்டை எழுத்துகள்',[
+ ['Learn: apple, letter, happy, coffee, butter','கற்கவும்: apple, letter, happy, coffee, butter'],
+ ['Double letters make one sound, not two','இரட்டை எழுத்து ஒரே ஒலியைத் தரும்'],
+ ['Practice 30 words with double letters','இரட்டை எழுத்துள்ள 30 வார்த்தைகளைப் பயிலவும்']],
+ {words:W('apple|ஆப்பல்;letter|லெட்டர்;happy|ஹேப்பி;coffee|காஃபி;butter|பட்டர்;summer|சம்மர்;dinner|டின்னர்;rabbit|ராபிட்;yellow|யெல்லோ;little|லிட்டில்;bell|பெல்;ball|பால்;doll|டால்;egg|எக்;kitten|கிட்டன்;dollar|டாலர்;puppy|பப்பி;sorry|சாரி;funny|ஃபன்னி;floor|ஃப்ளோர்;mirror|மிரர்;button|பட்டன்;ladder|லேடர்;pepper|பெப்பர்;hello|ஹலோ;carrot|கேரட்;school|ஸ்கூல்;glass|க்ளாஸ்;across|அக்ராஸ்;tomorrow|டுமாரோ')});
+D(11,'Simple Sentences','எளிய வாக்கியங்கள்',[
+ ['Read: “I am a man.” “The cat is big.” “My name is…”','படிக்கவும்: "I am a man." "The cat is big." "My name is…"'],
+ ['Connect the words smoothly','வார்த்தைகளைத் தடையின்றி இணைத்துப் படிக்கவும்'],
+ ['Read all 10 sentences below, twice','கீழே உள்ள 10 வாக்கியங்களையும் இருமுறை படிக்கவும்']],
+ {pass:[0]});
+D(12,'Common Word Patterns','பொதுவான சொல் வடிவங்கள்',[
+ ['Learn -ing words: running, walking, talking','-ing சொற்கள்: running, walking, talking'],
+ ['Learn -ed words: walked, played, worked','-ed சொற்கள்: walked, played, worked'],
+ ['Practice 25 words with these endings','இந்த முடிவுகளுடன் 25 வார்த்தைகளைப் பயிலவும்']],
+ {pats:P('-ing|இங்|running|ரன்னிங்;-ed (t)|ட்|walked|வாக்ட்;-ed (d)|ட்|played|ப்ளேட்;-ed (id)|இட்|painted|பெயின்டிட்'),
+  words:W('running|ரன்னிங்;walking|வாக்கிங்;talking|டாக்கிங்;eating|ஈட்டிங்;reading|ரீடிங்;singing|சிங்கிங்;playing|ப்ளேயிங்;looking|லுக்கிங்;listening|லிசனிங்;cooking|குக்கிங்;sleeping|ஸ்லீப்பிங்;working|வர்க்கிங்;walked|வாக்ட்;played|ப்ளேட்;worked|வர்க்ட்;jumped|ஜம்ப்ட்;asked|ஆஸ்க்ட்;cooked|குக்ட்;watched|வாட்ச்ட்;helped|ஹெல்ப்ட்;washed|வாஷ்ட்;cleaned|க்ளீன்ட்;opened|ஓபன்ட்;called|கால்ட்;painted|பெயின்டிட்')});
+D(13,'Sight Words (Part 1)','அடிக்கடி வரும் சொற்கள் (பகுதி 1)',[
+ ['Learn the 20 most common words below','கீழே உள்ள 20 பொதுச் சொற்களைக் கற்கவும்'],
+ ['Memorize and practice daily','மனப்பாடம் செய்து தினமும் பயிலவும்'],
+ ['Use these words in simple sentences','எளிய வாக்கியங்களில் பயன்படுத்தவும்']],
+ {words:W('the|த;and|அண்ட்;a|அ;to|டு;said|செட்;you|யூ;he|ஹி;I|ஐ;of|ஆவ்;it|இட்;was|வாஸ்;for|ஃபார்;on|ஆன்;are|ஆர்;as|அஸ்;with|வித்;his|ஹிஸ்;they|தே;at|அட்;be|பி'),pass:[1]});
+D(14,'Week 2 Review','வாரம் 2 மறுபார்வை',[
+ ['Review all learned patterns','கற்ற எல்லா வடிவங்களையும் மறுபார்வை செய்யவும்'],
+ ['Read the 20 sentences (words below plus the sentences)','20 வாக்கியங்களைப் படிக்கவும்'],
+ ['Self-test on sight words','அடிக்கடி வரும் சொற்களில் சுய சோதனை'],
+ ['Practice your weak areas','பலவீனமான பகுதிகளில் பயிற்சி']],
+ {review:[8,9,10,12,13],limit:30,pass:[0,2],rate:1});
+D(15,'Long Vowel Sounds','நீண்ட உயிர் ஒலிகள்',[
+ ['Learn: a_e (cake), i_e (bike), o_e (home), u_e (cube), e_e (these)','கற்கவும்: a_e, i_e, o_e, u_e, e_e'],
+ ['Compare short and long vowels (pairs below)','குறில் – நெடில் ஒலிகளை ஒப்பிடவும்'],
+ ['Practice 30 words with long vowel patterns','30 வார்த்தைகளைப் பயிலவும்']],
+ {pats:P('a_e|ஏ|cake|கேக்;i_e|ஐ|bike|பைக்;o_e|ஓ|home|ஹோம்;u_e|யூ|cube|க்யூப்;e_e|ஈ|these|தீஸ்'),
+  pairs:PAIR('cap|கேப்|cape|கேய்ப்;pin|பின்|pine|பைன்;hop|ஹாப்|hope|ஹோப்;cut|கட்|cute|க்யூட்;kit|கிட்|kite|கைட்;not|நாட்|note|நோட்;tap|டேப்|tape|டேய்ப்;mad|மேட்|made|மேய்ட்'),
+  words:W('cake|கேக்;name|நேம்;make|மேக்;game|கேம்;late|லேட்;face|ஃபேஸ்;lake|லேக்;bike|பைக்;time|டைம்;like|லைக்;nine|நைன்;five|ஃபைவ்;kite|கைட்;line|லைன்;ride|ரைட்;home|ஹோம்;nose|நோஸ்;bone|போன்;rose|ரோஸ்;hole|ஹோல்;stone|ஸ்டோன்;rope|ரோப்;cube|க்யூப்;cute|க்யூட்;huge|ஹியூஜ்;tube|ட்யூப்;these|தீஸ்;theme|தீம்;Pete|பீட்;complete|கம்ப்ளீட்')});
+D(16,'R-controlled Vowels','R உடன் வரும் உயிர் ஒலிகள்',[
+ ['Learn: ar (car), er (her), ir (bird), or (for), ur (turn)','கற்கவும்: ar, er, ir, or, ur'],
+ ['Practice 25 R-controlled words','25 வார்த்தைகளைப் பயிலவும்'],
+ ['Focus on the soft English “r” (not the rolled Tamil “ர்”)','ஆங்கில "r" மென்மையானது; தமிழ் "ர்" போல உருட்ட வேண்டாம்']],
+ {pats:P('ar|ஆர்|car|கார்;er|அர்|her|ஹர்;ir|அர்|bird|பர்ட்;or|ஓர்|for|ஃபார்;ur|அர்|turn|டர்ன்'),
+  words:W('car|கார்;star|ஸ்டார்;farm|ஃபார்ம்;park|பார்க்;dark|டார்க்;her|ஹர்;tiger|டைகர்;fern|ஃபர்ன்;sister|சிஸ்டர்;bird|பர்ட்;girl|கர்ல்;shirt|ஷர்ட்;first|ஃபர்ஸ்ட்;for|ஃபார்;corn|கார்ன்;horse|ஹார்ஸ்;storm|ஸ்டார்ம்;turn|டர்ன்;burn|பர்ன்;nurse|நர்ஸ்;purple|பர்ப்பிள்;fur|ஃபர்;hurt|ஹர்ட்;short|ஷார்ட்;fork|ஃபார்க்')});
+D(17,'Sight Words (Part 2)','அடிக்கடி வரும் சொற்கள் (பகுதி 2)',[
+ ['Learn the next 20 words below','அடுத்த 20 சொற்களைக் கற்கவும்'],
+ ['Use them in sentences','வாக்கியங்களில் பயன்படுத்தவும்'],
+ ['Speed reading practice','வேகமாகப் படிக்கும் பயிற்சி']],
+ {words:W('have|ஹேவ்;from|ஃப்ரம்;or|ஆர்;one|வன்;had|ஹேட்;by|பை;word|வர்ட்;but|பட்;not|நாட்;what|வாட்;all|ஆல்;were|வர்;we|வி;when|வென்;your|யோர்;can|கேன்;said|செட்;there|தேர்;each|ஈச்;which|விச்')});
+D(18,'Multi-syllable Words','பல அசைச் சொற்கள்',[
+ ['Break words into parts: com-pu-ter, im-por-tant, beau-ti-ful','சொற்களை அசைகளாகப் பிரிக்கவும்'],
+ ['Clap once for each syllable','ஒவ்வொரு அசைக்கும் ஒருமுறை கை தட்டவும்'],
+ ['Read 20 two-syllable and 10 three-syllable words','20 இரண்டசை, 10 மூன்றசை சொற்களைப் படிக்கவும்']],
+ {words:W('table|டேபிள்|ta·ble;pencil|பென்சில்|pen·cil;window|விண்டோ|win·dow;garden|கார்டன்|gar·den;mother|மதர்|moth·er;father|ஃபாதர்|fa·ther;teacher|டீச்சர்|teach·er;doctor|டாக்டர்|doc·tor;flower|ஃப்ளவர்|flow·er;monkey|மங்கி|mon·key;orange|ஆரஞ்ச்|or·ange;paper|பேப்பர்|pa·per;basket|பாஸ்கெட்|bas·ket;ticket|டிக்கெட்|tick·et;market|மார்க்கெட்|mar·ket;kitchen|கிச்சன்|kitch·en;pocket|பாக்கெட்|pock·et;water|வாட்டர்|wa·ter;sugar|ஷுகர்|su·gar;lemon|லெமன்|lem·on;computer|கம்ப்யூட்டர்|com·pu·ter;important|இம்போர்ட்டன்ட்|im·por·tant;beautiful|பியூட்டிஃபுல்|beau·ti·ful;banana|பனானா|ba·na·na;tomato|டமேட்டோ|to·ma·to;elephant|எலிஃபன்ட்|el·e·phant;family|ஃபேமிலி|fam·i·ly;remember|ரிமெம்பர்|re·mem·ber;umbrella|அம்ப்ரெல்லா|um·brel·la;hospital|ஹாஸ்பிடல்|hos·pi·tal')});
+D(19,'Compound Words','கூட்டுச் சொற்கள்',[
+ ['Learn: sunshine, bedroom, homework, basketball','கற்கவும்: sunshine, bedroom, homework, basketball'],
+ ['See how two words join to make one','இரண்டு சொற்கள் இணைந்து ஒன்றாவதைக் கவனியுங்கள்'],
+ ['Make and read 15 compound words','15 கூட்டுச் சொற்களை உருவாக்கிப் படிக்கவும்']],
+ {words:W('sunshine|சன்ஷைன்|sun + shine;bedroom|பெட்ரூம்|bed + room;homework|ஹோம்வர்க்|home + work;basketball|பாஸ்கெட்பால்|basket + ball;sunflower|சன்ஃப்ளவர்|sun + flower;notebook|நோட்புக்|note + book;classroom|க்ளாஸ்ரூம்|class + room;football|ஃபுட்பால்|foot + ball;rainbow|ரெயின்போ|rain + bow;toothbrush|டூத்பிரஷ்|tooth + brush;birthday|பர்த்டே|birth + day;airport|ஏர்போர்ட்|air + port;bathroom|பாத்ரூம்|bath + room;butterfly|பட்டர்ஃப்ளை|butter + fly;moonlight|மூன்லைட்|moon + light;pancake|பேன்கேக்|pan + cake;raincoat|ரெயின்கோட்|rain + coat;snowman|ஸ்னோமேன்|snow + man;goldfish|கோல்டுஃபிஷ்|gold + fish;cupcake|கப்கேக்|cup + cake')});
+D(20,'Contractions','சுருக்கங்கள்',[
+ ['Learn: I’m, don’t, can’t, won’t, it’s, they’re, we’ll','கற்கவும்: I’m, don’t, can’t, won’t, it’s, they’re, we’ll'],
+ ['The apostrophe (’) replaces missing letters','அபாஸ்ட்ரஃபி (’) விடுபட்ட எழுத்துகளைக் குறிக்கும்'],
+ ['Practice 20 common contractions','20 பொதுச் சுருக்கங்களைப் பயிலவும்']],
+ {words:W('I’m|ஐம்|I am;don’t|டோன்ட்|do not;can’t|கேன்ட்|cannot;won’t|வோன்ட்|will not;it’s|இட்ஸ்|it is;they’re|தேர்|they are;we’ll|வீல்|we will;isn’t|இஸ்ன்ட்|is not;didn’t|டிட்ன்ட்|did not;I’ll|ஐல்|I will;he’s|ஹீஸ்|he is;she’s|ஷீஸ்|she is;let’s|லெட்ஸ்|let us;that’s|தேட்ஸ்|that is;you’re|யோர்|you are;we’re|வீர்|we are;couldn’t|குட்ன்ட்|could not;doesn’t|டஸ்ன்ட்|does not;I’ve|ஐவ்|I have;what’s|வாட்ஸ்|what is')});
+D(21,'Week 3 Review','வாரம் 3 மறுபார்வை',[
+ ['Review all skills from this week','இந்த வார எல்லா திறன்களையும் மறுபார்வை செய்யவும்'],
+ ['Read the short paragraph (5–6 sentences)','சிறு பத்தியை (5–6 வாக்கியங்கள்) படிக்கவும்'],
+ ['Time yourself reading the words','வார்த்தைகளைப் படிக்கும் நேரத்தைக் கணக்கிடவும்'],
+ ['Note the areas to improve','மேம்படுத்த வேண்டிய பகுதிகளைக் குறிக்கவும்']],
+ {review:[15,16,17,18,19,20],limit:30,pass:[3],timer:true,rate:1});
+D(22,'Complex Consonant Blends','கலந்த மெய் ஒலிகள்',[
+ ['Learn: bl, cl, fl, gl, pl, sl','கற்கவும்: bl, cl, fl, gl, pl, sl'],
+ ['Learn: br, cr, dr, fr, gr, pr, tr','கற்கவும்: br, cr, dr, fr, gr, pr, tr'],
+ ['Practice 40 words with blends','40 வார்த்தைகளைப் பயிலவும்']],
+ {pats:P('bl|ப்ள்|blue|ப்ளூ;cl|க்ள்|clean|க்ளீன்;fl|ஃப்ள்|fly|ஃப்ளை;gl|க்ள்|glad|க்ளேட்;pl|ப்ள்|play|ப்ளே;sl|ஸ்ல்|slow|ஸ்லோ;br|ப்ர்|brown|ப்ரவுன்;cr|க்ர்|cry|க்ரை;dr|ட்ர்|drop|ட்ராப்;fr|ஃப்ர்|free|ஃப்ரீ;gr|க்ர்|green|க்ரீன்;pr|ப்ர்|proud|ப்ரவுட்;tr|ட்ர்|tree|ட்ரீ'),
+  words:W('blue|ப்ளூ;clean|க்ளீன்;fly|ஃப்ளை;glad|க்ளேட்;play|ப்ளே;slow|ஸ்லோ;black|ப்ளாக்;clap|க்ளாப்;flag|ஃப்ளேக்;glass|க்ளாஸ்;plant|ப்ளாண்ட்;sleep|ஸ்லீப்;brown|ப்ரவுன்;cry|க்ரை;drop|ட்ராப்;free|ஃப்ரீ;green|க்ரீன்;proud|ப்ரவுட்;tree|ட்ரீ;bread|ப்ரெட்;crab|க்ராப்;dress|ட்ரெஸ்;frog|ஃப்ராக்;grass|க்ராஸ்;price|ப்ரைஸ்;train|ட்ரெய்ன்;bring|ப்ரிங்;cross|க்ராஸ்;drink|ட்ரிங்க்;fruit|ஃப்ரூட்;stop|ஸ்டாப்;star|ஸ்டார்;skin|ஸ்கின்;smile|ஸ்மைல்;snow|ஸ்னோ;spoon|ஸ்பூன்;swim|ஸ்விம்;street|ஸ்ட்ரீட்;flower|ஃப்ளவர்;clock|க்ளாக்')});
+D(23,'Vowel Teams','உயிர் குழுக்கள்',[
+ ['Learn: ai/ay (rain/day), ee/ea (tree/read), oa/ow (boat/grow)','கற்கவும்: ai/ay, ee/ea, oa/ow'],
+ ['Practice 30 words with vowel teams','30 வார்த்தைகளைப் பயிலவும்'],
+ ['Keep the pronunciation consistent','ஒலியை ஒரே மாதிரியாக வைத்திருங்கள்']],
+ {pats:P('ai / ay|ஏ|rain|ரெய்ன்;ee / ea|ஈ|tree|ட்ரீ;oa / ow|ஓ|boat|போட்'),
+  words:W('rain|ரெய்ன்;train|ட்ரெய்ன்;mail|மெய்ல்;paint|பெயின்ட்;wait|வெய்ட்;day|டே;play|ப்ளே;stay|ஸ்டே;say|ஸே;way|வே;tree|ட்ரீ;see|ஸீ;feet|ஃபீட்;sleep|ஸ்லீப்;green|க்ரீன்;read|ரீட்;eat|ஈட்;sea|ஸீ;team|டீம்;meat|மீட்;boat|போட்;coat|கோட்;road|ரோட்;soap|சோப்;grow|க்ரோ;snow|ஸ்னோ;slow|ஸ்லோ;show|ஷோ;low|லோ;yellow|யெல்லோ')});
+D(24,'Reading Comprehension','வாசித்துப் புரிதல்',[
+ ['Read the 5 short passages below','கீழே உள்ள 5 சிறு பகுதிகளைப் படிக்கவும்'],
+ ['Answer the question after each passage','ஒவ்வொன்றிற்கும் பின் உள்ள கேள்விக்கு பதில் சொல்லவும்'],
+ ['Summarize each one in Tamil, then in English','ஒவ்வொன்றையும் தமிழில், பின் ஆங்கிலத்தில் சுருக்கிச் சொல்லவும்']],
+ {pass:[4,5,6,7,8]});
+D(25,'Irregular Words','ஒழுங்கற்ற சொற்கள்',[
+ ['Learn words that do not follow the rules: said, was, one, two, who, come, some','விதிக்கு உட்படாத சொற்கள்: said, was, one, two, who, come, some'],
+ ['Memorize these as whole words','முழுச் சொல்லாக மனப்பாடம் செய்யவும்'],
+ ['Practice 25 irregular words with flashcards (Practice tab)','25 சொற்களை பிளாஷ்கார்டு மூலம் பயிலவும் (பயிற்சி பக்கம்)']],
+ {words:W('said|செட்;was|வாஸ்;one|வன்;two|டூ;who|ஹூ;come|கம்;some|சம்;do|டூ;does|டஸ்;put|புட்;give|கிவ்;live|லிவ்;love|லவ்;move|மூவ்;through|த்ரூ;though|தோ;enough|இனஃப்;eye|ஐ;friend|ஃப்ரெண்ட்;people|பீப்பிள்;again|அகெயின்;could|குட்;would|வுட்;should|ஷுட்;are|ஆர்;were|வர்')});
+D(26,'Punctuation & Reading Flow','நிறுத்தற்குறிகள் & படிக்கும் ஓட்டம்',[
+ ['Pause at commas, stop at full stops','கமாவில் சிறு இடைவெளி, புள்ளியில் நிறுத்தம்'],
+ ['Read with expression: ? rises, ! is excited','உணர்வுடன் படிக்கவும்: ? ஏறும், ! உற்சாகம்'],
+ ['Read the 10 sentences below with natural rhythm','கீழே உள்ள 10 வாக்கியங்களை இயல்பான தாளத்தில் படிக்கவும்']],
+ {pats:P(',|சிறு இடைநிறுத்தம் (கமா)|Hello, Anu.|;.|முழு நிறுத்தம் (புள்ளி)|I like tea.|;?|குரல் மேலே ஏறும்|Do you like tea?|;!|உற்சாகம் / அழுத்தம்|Wow! That is big!|'),pass:[9]});
+D(27,'Speed Building','வேகப் பயிற்சி',[
+ ['Read the familiar words below quickly','பழகிய வார்த்தைகளை வேகமாகப் படிக்கவும்'],
+ ['Time yourself and beat yesterday’s time','நேரத்தைக் கணக்கிட்டு நேற்றைய நேரத்தை முந்துங்கள்'],
+ ['Accuracy first, then speed','முதலில் துல்லியம், பிறகு வேகம்']],
+ {review:[13,17,25],limit:60,timer:true});
+D(28,'Final Assessment','இறுதி மதிப்பீடு',[
+ ['Read the complete short story (12 sentences)','12 வாக்கிய முழுக் கதையைப் படிக்கவும்'],
+ ['Test yourself on everything you learned (Practice tab)','கற்ற எல்லாவற்றிலும் உங்களைச் சோதிக்கவும்'],
+ ['Evaluate your own progress','உங்கள் முன்னேற்றத்தை மதிப்பிடவும்'],
+ ['Plan your continued learning','தொடர்ந்து கற்கும் திட்டம் தயாரிக்கவும்']],
+ {review:[5,6,10,13,17,22,23,25],limit:40,pass:[10],rate:1});
+D(29,'Real-world Practice','நிஜ வாழ்க்கைப் பயிற்சி',[
+ ['Read simple signs, labels, and menus','எளிய பலகைகள், லேபிள்கள், மெனுக்களைப் படிக்கவும்'],
+ ['Read app names and phone text (list below)','செயலி பெயர்கள், ஃபோன் எழுத்துகளைப் படிக்கவும்'],
+ ['Find 20 English words around you and count them below','உங்களைச் சுற்றி 20 ஆங்கில வார்த்தைகளைக் கண்டுபிடித்து கீழே எண்ணவும்']],
+ {counter:20,words:W('menu|மெனு;exit|எக்ஸிட்;open|ஓபன்;closed|க்ளோஸ்ட்;push|புஷ்;pull|புல்;stop|ஸ்டாப்;welcome|வெல்கம்;hotel|ஹோட்டல்;hospital|ஹாஸ்பிடல்;school|ஸ்கூல்;bank|பேங்க்;ticket|டிக்கெட்;price|ப்ரைஸ்;sale|சேல்;WhatsApp|வாட்ஸ்அப்;YouTube|யூடியூப்;Google|கூகுள்;Facebook|ஃபேஸ்புக்;Instagram|இன்ஸ்டாகிராம்;camera|கேமரா;settings|செட்டிங்ஸ்;battery|பேட்டரி;message|மெசேஜ்;photo|ஃபோட்டோ;video|வீடியோ;maps|மேப்ஸ்;search|சர்ச்;download|டவுன்லோட்;password|பாஸ்வர்ட்')});
+D(30,'Future Planning','எதிர்காலத் திட்டம்',[
+ ['Assess your overall progress','உங்கள் ஒட்டுமொத்த முன்னேற்றத்தை மதிப்பிடவும்'],
+ ['Identify your strongest and weakest areas','வலிமையான, பலவீனமான பகுதிகளைக் கண்டறியவும்'],
+ ['Plan next month’s learning goals','அடுத்த மாத இலக்குகளைத் திட்டமிடவும்'],
+ ['Celebrate your achievement!','உங்கள் சாதனையைக் கொண்டாடுங்கள்!']],
+ {summary:true});
+
+/* passages: lines are "english|reading|meaning" (reading and meaning optional) */
+const PASS=[
+ {t:'10 simple sentences',ta:'10 எளிய வாக்கியங்கள்',lines:['I am a man.|ஐ ஆம் அ மேன்.|நான் ஒரு ஆண்.','The cat is big.|த கேட் இஸ் பிக்.|பூனை பெரியது.','My name is Ravi.|மை நேம் இஸ் ரவி.|என் பெயர் ரவி.','I have a pen.|ஐ ஹேவ் அ பென்.|என்னிடம் ஒரு பேனா உள்ளது.','The sun is hot.|த சன் இஸ் ஹாட்.|சூரியன் சூடாக உள்ளது.','She is my mother.|ஷி இஸ் மை மதர்.|அவள் என் அம்மா.','He has a red cap.|ஹி ஹேஸ் அ ரெட் கேப்.|அவனிடம் ஒரு சிவப்புத் தொப்பி உள்ளது.','We eat rice.|வி ஈட் ரைஸ்.|நாங்கள் சாதம் சாப்பிடுகிறோம்.','The dog can run.|த டாக் கேன் ரன்.|நாய் ஓட முடியும்.','I like milk.|ஐ லைக் மில்க்.|எனக்குப் பால் பிடிக்கும்.']},
+ {t:'Sight words in sentences',ta:'அடிக்கடி வரும் சொற்கள் வாக்கியங்களில்',lines:['I am at the shop with you.||நான் உங்களுடன் கடையில் இருக்கிறேன்.','They are on the bus.||அவர்கள் பேருந்தில் இருக்கிறார்கள்.','He said it was for his dog.||அது அவன் நாய்க்கானது என்று சொன்னான்.']},
+ {t:'10 more sentences',ta:'மேலும் 10 வாக்கியங்கள்',lines:['The big dog is running.||பெரிய நாய் ஓடுகிறது.','She walked to the shop.||அவள் கடைக்கு நடந்து சென்றாள்.','They played in the park.||அவர்கள் பூங்காவில் விளையாடினார்கள்.','He is eating a red apple.||அவன் ஒரு சிவப்பு ஆப்பிள் சாப்பிடுகிறான்.','I am writing a letter.||நான் ஒரு கடிதம் எழுதுகிறேன்.','The baby is happy.||குழந்தை மகிழ்ச்சியாக உள்ளது.','We worked and talked.||நாங்கள் வேலை செய்தோம், பேசினோம்.','My mother cooks rice.||என் அம்மா சாதம் சமைக்கிறார்.','The ship is on the water.||கப்பல் தண்ணீரில் உள்ளது.','I think it is a good book.||இது நல்ல புத்தகம் என்று நினைக்கிறேன்.']},
+ {t:'My Dog',ta:'என் நாய்',lines:['My name is Ravi.','I live in a small house.','I have a dog.','The dog is brown.','I play with him every day.','We are happy.'],sum:'என் பெயர் ரவி. நான் ஒரு சிறிய வீட்டில் வாழ்கிறேன். என்னிடம் ஒரு பழுப்பு நிற நாய் உள்ளது. தினமும் அதனுடன் விளையாடுகிறேன். நாங்கள் மகிழ்ச்சியாக இருக்கிறோம்.'},
+ {t:'The White Cat',ta:'வெள்ளைப் பூனை',lines:['Ravi has a cat.','The cat is white.','The cat likes milk.'],sum:'ரவியிடம் ஒரு பூனை உள்ளது. அது வெள்ளை நிறம். அதற்குப் பால் பிடிக்கும்.',q:['What color is the cat?','பூனையின் நிறம் என்ன?','White.','வெள்ளை.']},
+ {t:'At the Market',ta:'சந்தையில்',lines:['It is Sunday.','Mala goes to the market.','She buys apples and rice.'],sum:'இன்று ஞாயிற்றுக்கிழமை. மாலா சந்தைக்குச் செல்கிறாள். ஆப்பிள், சாதம் வாங்குகிறாள்.',q:['Who goes to the market?','சந்தைக்குச் செல்பவர் யார்?','Mala.','மாலா.']},
+ {t:'The Red Ball',ta:'சிவப்புப் பந்து',lines:['Tom has a red ball.','He plays in the park.','His friend plays with him.'],sum:'டாமிடம் ஒரு சிவப்புப் பந்து உள்ளது. அவன் பூங்காவில் விளையாடுகிறான். அவன் நண்பனும் சேர்ந்து விளையாடுகிறான்.',q:['Where does Tom play?','டாம் எங்கே விளையாடுகிறான்?','In the park.','பூங்காவில்.']},
+ {t:'A Hot Day',ta:'வெப்பமான நாள்',lines:['The sun is hot today.','Anu drinks cold water.','She feels better.'],sum:'இன்று வெயில் அதிகம். அனு குளிர்ந்த தண்ணீர் குடிக்கிறாள். அவளுக்கு நன்றாக இருக்கிறது.',q:['What does Anu drink?','அனு என்ன குடிக்கிறாள்?','Cold water.','குளிர்ந்த தண்ணீர்.']},
+ {t:'My Morning',ta:'என் காலை',lines:['I wake up at six.','I brush my teeth.','Then I eat breakfast and go to school.'],sum:'நான் ஆறு மணிக்கு எழுகிறேன். பல் துலக்குகிறேன். பிறகு காலை உணவு சாப்பிட்டு பள்ளிக்குச் செல்கிறேன்.',q:['When does he wake up?','அவன் எப்போது எழுகிறான்?','At six.','ஆறு மணிக்கு.']},
+ {t:'Read with pauses',ta:'நிறுத்தங்களுடன் படிக்கவும்',lines:['Hello, my name is Anu.||ஹலோ, என் பெயர் அனு.','I like tea, coffee, and milk.||எனக்கு தேநீர், காபி, பால் பிடிக்கும்.','Stop! Do not run.||நில்லுங்கள்! ஓடாதீர்கள்.','What is your name?||உங்கள் பெயர் என்ன?','It is raining, so I take an umbrella.||மழை பெய்கிறது, அதனால் குடை எடுக்கிறேன்.','Wait. Listen to me.||காத்திருங்கள். நான் சொல்வதைக் கேளுங்கள்.','Yes, I can.||ஆம், என்னால் முடியும்.','Wow! That is big!||அடடா! அது பெரியது!','Do you like mangoes?||உங்களுக்கு மாம்பழம் பிடிக்குமா?','First, wash your hands. Then, eat food.||முதலில் கைகளைக் கழுவுங்கள். பிறகு சாப்பிடுங்கள்.']},
+ {t:'The Little Bird',ta:'சிறு பறவை',lines:['A little bird lived in a big green tree.','Every morning it sang a happy song.','One day, the rain came.','The bird was wet and cold.','A kind girl saw the bird.','She took it home.','She gave it warm milk and a soft bed.','The bird slept all night.','In the morning, the sun came out.','The bird said thank you with a song.','Then it flew back to its tree.','The girl smiled and waved.'],sum:'ஒரு சிறு பறவை பெரிய பச்சை மரத்தில் வாழ்ந்தது. தினமும் காலை மகிழ்ச்சிப் பாட்டுப் பாடியது. ஒருநாள் மழை வந்தது. பறவை நனைந்து குளிரில் நடுங்கியது. ஒரு அன்பான சிறுமி அதைப் பார்த்தாள். வீட்டுக்குக் கொண்டுசென்று சூடான பாலும் மென்மையான படுக்கையும் கொடுத்தாள். இரவு முழுவதும் பறவை தூங்கியது. காலையில் சூரியன் வந்தது. பறவை பாட்டின் மூலம் நன்றி சொன்னது. பிறகு தன் மரத்துக்குப் பறந்து சென்றது. சிறுமி சிரித்து கையசைத்தாள்.'}
+];
+/* day -> passage indexes (set via d.pass) */
+
+/* ---------- derived ---------- */
+const TOTAL=30;
+const wordsOf=n=>{const d=DAYS[n];return d.words||[]};
+function dayWords(d,seed){
+  if(!d.review)return d.words||[];
+  const seen=new Set(),out=[];
+  d.review.forEach(k=>(DAYS[k].words||[]).forEach(w=>{const key=w.en.toLowerCase();if(!seen.has(key)){seen.add(key);out.push(w)}}));
+  const a=seed?out.slice().sort(()=>Math.random()-.5):out;
+  return d.limit?a.slice(0,d.limit):a;
+}
+const doneCount=()=>Object.keys(S.done).length;
+const todayStr=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const dayNum=s=>Math.round(new Date(s+'T00:00:00').getTime()/864e5);
+function streak(){
+  const set=new Set(Object.values(S.done).map(dayNum));let t=dayNum(todayStr()),c=0;
+  if(!set.has(t))t--;
+  while(set.has(t)){c++;t--}return c;
+}
+const nextDay=()=>{for(let i=1;i<=TOTAL;i++)if(!S.done[i])return i;return null};
+const taskProg=n=>{const d=DAYS[n];return d.tasks.filter((_,i)=>S.tasks[n+'-'+i]).length/d.tasks.length};
+
+/* ---------- views ---------- */
+function reader(p,pi,open){
+  const lines=p.lines.map(l=>l.split('|'));
+  const rows=lines.map(([en,rd,mn],i)=>{
+    const toks=en.match(/[A-Za-z’']+|[^A-Za-z’'\s]+/g)||[];
+    const html=toks.map(t=>/[A-Za-z]/.test(t)?`<button type="button" data-say="${esc(t)}">${esc(t)}</button>`:`<span class="pu">${esc(t)}</span>`).join(' ').replace(/ (<span class="pu">)/g,'$1');
+    return `<div class="line">${spkBtn(en,'Read sentence')}<div class="tx"><div class="en">${html}</div>${rd?`<div class="rd">${esc(rd)}</div>`:''}${mn?`<div class="mn">${esc(mn)}</div>`:''}</div></div>`;
+  }).join('');
+  const full=lines.map(l=>l[0]).join(' ');
+  return `<section class="pass"><div class="ph"><div><h3>${esc(p.t)}</h3><span class="ta muted" style="font-size:.85rem">${esc(p.ta)}</span></div>
+   <button class="btn ghost" type="button" data-say="${esc(full)}">${ICON.spk} முழுதும் கேள்</button></div>${rows}
+   ${p.sum?`<details class="qa"><summary>தமிழ் பொருள்</summary><p>${esc(p.sum)}</p></details>`:''}
+   ${p.q?`<div class="qa"><div><b>Q:</b> ${esc(p.q[0])} <span class="muted">(${esc(p.q[1])})</span></div><button class="btn ghost" type="button" data-act="reveal">பதிலைக் காட்டு</button><div class="ans" hidden>${esc(p.q[2])} · ${esc(p.q[3])}</div></div>`:''}</section>`;
+}
+function wordCard(w,key){
+  return `<button class="w" type="button" data-say="${esc(w.en)}" data-rep="${key}">${ICON.spk.replace('<svg','<svg class="sp"')}<span class="en">${esc(w.en)}</span><span class="tam">${esc(w.ta)}</span>${w.h?`<span class="hint">${esc(w.h)}</span>`:''}<span class="dots">${'<i></i>'.repeat(5)}</span></button>`;
+}
+const reps={};
+let shuffleSeed=false,timer=null;
+
+function vHome(){
+  const dc=doneCount(),pct=dc/TOTAL,nd=nextDay();
+  const R=48,C=2*Math.PI*R;
+  const weeks=[['வாரம் 1 · Foundation',1,7],['வாரம் 2 · Building',8,14],['வாரம் 3 · Intermediate',15,21],['வாரம் 4 · Advanced',22,28],['நாள் 29–30 · Planning',29,30]];
+  return `
+  <section class="hero" id="hero"><span class="eyebrow">APPLE எப்படி படிக்கிறது</span>
+   <h1 class="ta">எழுத்துகளை இணைத்துப் படியுங்கள்</h1>
+   <p class="lead">தமிழில் எழுத்துகளை இணைத்து வாசிப்பது போலவே, ஆங்கிலத்திலும் ஒலிகளை இணைக்கலாம்.</p>
+   <div class="tiles" aria-label="A P P L E"><div class="tile"><b>A</b><span>ஆ</span></div><div class="tile"><b>P</b><span>ப்</span></div><div class="tile"><b>P</b><span>ப்</span></div><div class="tile"><b>L</b><span>ல்</span></div><div class="tile silent"><b>E</b><span>மௌனம்</span></div></div>
+   <div class="result"><span class="muted">ஆ + ப் + ப் + ல் =</span><span class="big ta">ஆப்பல்</span><button class="btn mark" type="button" data-act="apple">${ICON.spk} கேள்</button></div>
+   <ul class="notes"><li>கடைசி E மௌனம் (silent). அது ஒலிக்காது.</li><li>இரட்டை P ஒரே ஒலியைத் தரும்.</li></ul>
+  </section>
+  <section class="card stack">
+   <div class="prog"><div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="${R}" fill="none" stroke="var(--soft)" stroke-width="12"/><circle cx="60" cy="60" r="${R}" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-pct)}"/></svg><div class="c"><b>${dc}</b><span>/ ${TOTAL} நாள்</span></div></div>
+    <div class="stats"><div class="stat"><b>${streak()}</b><span>தொடர் நாட்கள்</span></div><div class="stat"><b>${Math.round(pct*100)}%</b><span>முடிந்தது</span></div>
+    <div class="stat"><b>${S.best.listen||0}/10</b><span>கேட்டுத் தேர்வு · சிறந்தது</span></div><div class="stat"><b>${S.best.read||0}/10</b><span>படித்துத் தேர்வு · சிறந்தது</span></div></div></div>
+   ${nd?`<div class="next plain"><div><span class="dn">Day ${nd}</span><h3 style="margin-top:6px">${esc(DAYS[nd].t)}</h3><p class="ta muted" style="font-size:.9rem">${esc(DAYS[nd].ta)} · ${DAYS[nd].mins} நிமிடம்</p></div><a class="btn" href="#day-${nd}">இன்றைய பாடம்</a></div>`
+     :`<div class="celebrate"><h3 class="ta">வாழ்த்துகள்! 30 நாட்களும் முடிந்தன.</h3></div>`}
+  </section>
+  <section class="card stack"><h3 class="ta">தினசரி பயிற்சி முறை</h3>
+   <div class="routine"><div><b>15 min</b><span>காலை · புதிய எழுத்து ஒலிகள்</span></div><div><b>15 min</b><span>மாலை · வார்த்தை படிப்பு</span></div><div><b>10 min</b><span>இரவு · மறுபார்வை</span></div></div></section>
+  <section class="card stack"><h3 class="ta">வாரம் வாரமாக</h3><div class="bars">${weeks.map(([l,a,b])=>{let c=0;for(let i=a;i<=b;i++)if(S.done[i])c++;const t=b-a+1;return `<div class="bar"><span class="ta">${l}</span><div class="tr"><i style="width:${c/t*100}%"></i></div><em>${c}/${t}</em></div>`}).join('')}</div></section>
+  <section class="card"><h3 class="ta" style="margin-bottom:6px">பயிற்சிக் குறிப்புகள்</h3>
+   <details class="tip" open><summary>தொடக்கத்தில் இதை முயற்சிக்கவும்</summary><ul><li>வார்த்தைகளைத் தொட்டு ஒலி கேளுங்கள் (அல்லது Google Translate)</li><li>ஒவ்வொரு வார்த்தையையும் 5 முறை சொல்லுங்கள்</li><li>தமிழ் எழுத்துகளோடு ஒப்பிட்டுப் புரிந்துகொள்ளுங்கள்</li></ul></details>
+   <details class="tip"><summary>ஏன் APPLE "ஆப்பல்" என்று படிக்கிறோம்?</summary><p>ஆங்கிலத்தில் சில எழுத்துகள் மௌனமாக இருக்கும். APPLE-ல் கடைசி E மௌனம். இரட்டை P ஒரே ஒலி தரும். இதனால் A-PP-L = ஆப்பல்.</p></details>
+   <details class="tip"><summary>தினசரி பழக்கங்கள்</summary><ul><li>தினமும் பயிலுங்கள்; 15 நிமிடமாவது</li><li>ஒவ்வொரு புதிய வார்த்தையையும் 5 முறை எழுதுங்கள்</li><li>எல்லாவற்றையும் சத்தமாகச் சொல்லுங்கள்</li><li>உங்கள் குரலை ஃபோனில் பதிவு செய்து கேளுங்கள்</li><li>வேகத்தை விட துல்லியம் முக்கியம்</li></ul></details>
+   <details class="tip"><summary>கூடுதல் வளங்கள்</summary><ul><li>எளிய ஆங்கிலக் குழந்தைகள் புத்தகங்கள்</li><li>Phonics YouTube வீடியோக்கள்</li><li>ஆடியோ உள்ள ஆங்கிலப் பயிற்சி செயலிகள்</li><li>தெரிந்த தமிழ்ப் படங்களை ஆங்கிலத் துணைத்தலைப்புடன் பாருங்கள்</li></ul></details>
+  </section>`;
+}
+
+function vPlan(){
+  const nd=nextDay();
+  const weeks=[['வாரம் 1','Foundation · 30 min/day','எல்லா எழுத்து ஒலிகளையும் கற்றுக்கொள்ளுங்கள்',1,7],['வாரம் 2','Building Skills · 40 min/day','எளிய வார்த்தைகளை நம்பிக்கையுடன் படியுங்கள்',8,14],['வாரம் 3','Intermediate · 45 min/day','அடிப்படை வாக்கியங்களைப் படியுங்கள்',15,21],['வாரம் 4','Advanced · 50 min/day','சிறு பத்திகளைப் படியுங்கள்',22,28],['நாள் 29–30','Practice & Planning','நிஜ வாழ்க்கையில் பயன்படுத்தி, அடுத்த இலக்கைத் திட்டமிடுங்கள்',29,30]];
+  return `<div><h2 class="ta">30 நாள் திட்டம்</h2><p class="muted ta">ஒரு நாளைத் தொட்டுத் திறக்கவும்.</p></div>`+weeks.map(([a,b,c,s,e])=>{
+   let h='';for(let i=s;i<=e;i++){const d=DAYS[i],dn=S.done[i];h+=`<a class="day ${dn?'done':''} ${i===nd?'cur':''}" href="#day-${i}"><span class="n">${i}</span><div><b>${esc(d.t)}</b><span>${esc(d.ta)}</span></div>${dn?`<span class="ck">${ICON.chk}</span>`:''}</a>`}
+   return `<section class="week"><header><h3 class="ta">${a} <small class="muted" style="font-family:var(--f-body);font-weight:400;font-size:.8rem">${b}</small></h3></header><p class="ta muted" style="font-size:.9rem;margin-top:-6px">இலக்கு: ${c}</p><div class="days">${h}</div></section>`}).join('');
+}
+
+function vDay(n){
+  const d=DAYS[n];if(!d)return vPlan();
+  const words=dayWords(d,shuffleSeed);
+  const done=!!S.done[n];
+  const sec=(h,sub,body)=>`<section class="card sec"><h3>${h}${sub?` <small>${sub}</small>`:''}</h3>${body}</section>`;
+  let h=`<a class="crumb" href="#plan">${ICON.back} 30 நாள் திட்டம்</a>
+  <header class="dhead"><span class="pill">Day ${n} · ${d.mins} min</span><h2>${esc(d.t)}</h2><div class="tt ta">${esc(d.ta)}</div></header>`;
+  h+=sec('இன்றைய பணிகள்','Tasks · '+Math.round(taskProg(n)*100)+'%',`<ul class="tasks">${d.tasks.map((t,i)=>`<li><button type="button" class="${S.tasks[n+'-'+i]?'on':''}" data-act="task" data-k="${n}-${i}" aria-pressed="${!!S.tasks[n+'-'+i]}"><span class="bx">${ICON.chk}</span><span><span class="te">${esc(t[0])}</span><span class="tt2">${esc(t[1])}</span></span></button></li>`).join('')}</ul>`);
+  if(d.letters)h+=sec('எழுத்துகள்','Tap a letter for its name, a word to hear it',`<div class="lgrid">${[...d.letters].map(letterCard).join('')}</div>`);
+  if(d.pats)h+=sec('வடிவங்கள்','Patterns · tap to hear',`<div class="pats">${d.pats.map(p=>`<button class="pat" type="button" data-say="${esc(p.ex)}"><span class="p">${esc(p.p)}</span><span class="pt">${esc(p.ta)}</span><span class="px"><b>${esc(p.ex)}</b> ${esc(p.exta)}</span></button>`).join('')}</div>`);
+  if(d.pairs)h+=sec('குறில் ↔ நெடில்','Short vs long',`<div class="pairs">${d.pairs.map(p=>`<div class="pair"><button type="button" data-say="${p[0]}"><b>${p[0]}</b><span>${p[1]}</span></button><span class="ar">→</span><button type="button" data-say="${p[2]}"><b>${p[2]}</b><span>${p[3]}</span></button></div>`).join('')}</div>`);
+  if(words.length)h+=sec('வார்த்தைகள்',`${words.length} words`,`<p class="repnote">ஒவ்வொரு வார்த்தையையும் 5 முறை கேட்டு, சொல்லுங்கள். ஒவ்வொரு தொடுதலும் ஒரு புள்ளியை நிரப்பும்.</p>
+    <div class="row"><button class="btn ghost" type="button" data-say="${esc(words.map(w=>w.en).join('. '))}">${ICON.spk} எல்லாம் கேள்</button>${d.review?'<button class="btn ghost" type="button" data-act="shuffle">கலக்கு</button>':''}</div>
+    <div class="words">${words.map((w,i)=>wordCard(w,'d'+n+'-'+i)).join('')}</div>`);
+  if(d.pass)d.pass.forEach(pi=>{h+=reader(PASS[pi],pi)});
+  if(d.counter){const c=S.counter[n]||0;h+=sec('சுற்றிலும் உள்ள ஆங்கில வார்த்தைகள்','Target '+d.counter,`<div class="counter"><button type="button" data-act="cnt" data-v="-1" aria-label="Decrease">−</button><b>${c}</b><button type="button" data-act="cnt" data-v="1" aria-label="Increase">+</button><span class="ta muted">/ ${d.counter} கண்டுபிடித்தவை</span></div>`)}
+  if(d.timer){const b=S.speed[n];h+=sec('நேரப் பயிற்சி','Time yourself',`<div class="timer"><b id="tm">0.0s</b><button class="btn" id="tbtn" type="button" data-act="timer">தொடங்கு</button><span class="ta muted">${b?'சிறந்த நேரம்: '+b+' வினாடி':'மேலே உள்ள வார்த்தைகளைப் படித்து முடித்ததும் நிறுத்துங்கள்'}</span></div>`)}
+  if(d.summary)h+=summary();
+  if(d.rate||n%7===0||d.summary){const r=S.rating[n]||0;h+=sec('சுய மதிப்பீடு','How did it go?',`<div class="rate">${[[1,'மேலும் பயிற்சி தேவை'],[2,'பரவாயில்லை'],[3,'நம்பிக்கையாக உள்ளது']].map(([v,l])=>`<button type="button" data-act="rate" data-v="${v}" aria-pressed="${r===v}">${l}</button>`).join('')}</div>`)}
+  h+=`<div class="card row" style="justify-content:space-between"><button class="btn ${done?'ghost':''}" type="button" data-act="complete">${done?'முடிந்தது · மீண்டும் திறக்க':'இந்த நாளை முடித்தேன்'}</button><span class="ta muted" style="font-size:.88rem">${done?S.done[n]+' அன்று முடித்தீர்கள்':''}</span></div>
+  <div class="dnav">${n>1?`<a class="btn ghost" href="#day-${n-1}">← Day ${n-1}</a>`:'<span></span>'}${n<TOTAL?`<a class="btn ghost" href="#day-${n+1}">Day ${n+1} →</a>`:''}</div>`;
+  return h;
+}
+function summary(){
+  const dc=doneCount(),weak=Object.keys(S.rating).filter(k=>S.rating[k]===1),strong=Object.keys(S.rating).filter(k=>S.rating[k]===3);
+  const chips=a=>a.length?a.map(k=>`<a class="btn ghost" style="padding:4px 12px" href="#day-${k}">Day ${k}</a>`).join(' '):'<span class="muted ta">இன்னும் மதிப்பீடு இல்லை</span>';
+  const goals=['தினமும் 10 புதிய வார்த்தைகள் கற்கவும்','குழந்தைகள் ஆங்கிலப் புத்தகத்தின் 1 பக்கம் தினமும் படிக்கவும்','ஆங்கிலத் துணைத்தலைப்புடன் தமிழ்ப் படம் பார்க்கவும்','5 எளிய ஆங்கில வாக்கியங்களைப் பேசிப் பழகவும்'];
+  return `<section class="card sec"><h3>உங்கள் சாதனை</h3><div class="stats"><div class="stat"><b>${dc}/30</b><span>முடிந்த நாட்கள்</span></div><div class="stat"><b>${streak()}</b><span>தொடர் நாட்கள்</span></div></div>
+   <div><div class="eyebrow">வலிமையான பகுதிகள்</div><div class="row" style="margin-top:6px">${chips(strong)}</div></div>
+   <div><div class="eyebrow">மேலும் பயிற்சி தேவை</div><div class="row" style="margin-top:6px">${chips(weak)}</div></div>
+   <div><div class="eyebrow">அடுத்த மாத இலக்குகள்</div><ul class="notes">${goals.map(g=>`<li>${g}</li>`).join('')}</ul></div>
+   ${dc>=TOTAL?'<div class="celebrate"><h3 class="ta">வாழ்த்துகள்! நீங்கள் 30 நாள் பயணத்தை முடித்துவிட்டீர்கள்.</h3></div>':''}</section>`;
+}
+
+function vLetters(){
+  return `<div><h2 class="ta">ஆங்கில எழுத்து ஒலிகள்</h2><p class="muted ta">பெரிய எழுத்தைத் தொட்டால் பெயர் கேட்கும். வார்த்தையைத் தொட்டால் முழு வார்த்தை கேட்கும். கீழே உள்ள சிறு பொத்தான்கள் மெய் + உயிர் சேர்க்கைகள்.</p></div>
+  <section class="stack"><h3 class="ta">உயிர் எழுத்துகள் <small class="muted" style="font-family:var(--f-body);font-weight:400;font-size:.8rem">Vowels</small></h3><div class="lgrid">${[...'AEIOU'].map(letterCard).join('')}</div></section>
+  <section class="stack"><h3 class="ta">மெய் எழுத்துகள் <small class="muted" style="font-family:var(--f-body);font-weight:400;font-size:.8rem">Consonants</small></h3><div class="lgrid">${[...'BCDFGHJKLMNPQRSTVWXYZ'].map(letterCard).join('')}</div></section>
+  <p class="muted ta" style="font-size:.85rem">சேர்க்கை ஒலிகள் தோராயமானவை. துல்லியமான ஒலிக்கு வார்த்தை பொத்தான்களைக் கேளுங்கள்.</p>`;
+}
+
+function vRead(){
+  return `<div><h2 class="ta">வாசிப்புப் பயிற்சி</h2><p class="muted ta">சொல்லைத் தொட்டால் அந்தச் சொல் கேட்கும். ஸ்பீக்கர் பொத்தானைத் தொட்டால் முழு வாக்கியம் கேட்கும். சிவப்புக் குறிகள் நிறுத்தற்குறிகள்.</p></div>`+PASS.map((p,i)=>reader(p,i)).join('');
+}
+
+/* quiz */
+let Q=null,qopt={mode:'listen',pool:'learned'};
+function poolWords(){
+  let max=qopt.pool==='all'?TOTAL:Math.max(6,(Math.max(0,...Object.keys(S.done).map(Number))||0)+1);
+  const seen=new Set(),out=[];
+  for(let i=1;i<=Math.min(max,TOTAL);i++){(DAYS[i].words||[]).forEach(w=>{const k=w.en.toLowerCase();if(!seen.has(k)){seen.add(k);out.push(w)}})}
+  return out;
+}
+const shuf=a=>a.slice().sort(()=>Math.random()-.5);
+function startQuiz(mode){
+  const pool=poolWords();const items=shuf(pool).slice(0,10).map(w=>{
+    const others=shuf(pool.filter(x=>x.en.toLowerCase()!==w.en.toLowerCase()&&(mode==='listen'||x.ta!==w.ta)));
+    const opts=shuf([w,...others.slice(0,3)]);return{w,opts,ans:opts.indexOf(w)}});
+  Q={mode,items,i:0,score:0,picked:null};
+}
+function vPractice(){
+  if(!Q){
+    const pw=poolWords().length;
+    return `<div><h2 class="ta">பயிற்சித் தேர்வு</h2><p class="muted ta">10 கேள்விகள். ஒவ்வொரு முறையும் வேறு வார்த்தைகள் வரும்.</p></div>
+    <div class="row"><span class="ta muted" style="font-size:.9rem">வார்த்தைகள்:</span><div class="seg" role="group"><button type="button" data-act="pool" data-v="learned" aria-pressed="${qopt.pool==='learned'}">இதுவரை கற்றவை</button><button type="button" data-act="pool" data-v="all" aria-pressed="${qopt.pool==='all'}">எல்லாம்</button></div><span class="muted" style="font-size:.8rem">${pw} words</span></div>
+    <div class="modes"><button class="mode" type="button" data-act="quiz" data-v="listen"><h3 class="ta">கேட்டுத் தேர்ந்தெடு</h3><p>ஒலியைக் கேட்டு, சரியான ஆங்கிலச் சொல்லைத் தேர்ந்தெடுங்கள்.</p><span class="muted" style="font-size:.8rem">Listen → pick the word · Best ${S.best.listen||0}/10</span></button>
+    <button class="mode" type="button" data-act="quiz" data-v="read"><h3 class="ta">படித்து ஒலியைத் தேர்ந்தெடு</h3><p>ஆங்கிலச் சொல்லைப் பார்த்து, சரியான தமிழ் ஒலியைத் தேர்ந்தெடுங்கள்.</p><span class="muted" style="font-size:.8rem">Read → pick the sound · Best ${S.best.read||0}/10</span></button></div>`;
+  }
+  if(Q.i>=Q.items.length){
+    const b=S.best[Q.mode]||0;const msg=Q.score>=9?'அருமை!':Q.score>=6?'நன்று! தொடருங்கள்.':'மீண்டும் பயிற்சி செய்யுங்கள்.';
+    return `<div class="card stack" style="text-align:center;align-items:center"><span class="eyebrow">முடிவு</span><div class="score">${Q.score}/10</div><p class="ta" style="font-weight:700">${msg}</p><p class="muted ta">சிறந்த மதிப்பெண்: ${b}/10</p>
+     <div class="row"><button class="btn" type="button" data-act="quiz" data-v="${Q.mode}">மீண்டும்</button><button class="btn ghost" type="button" data-act="qexit">முடி</button></div></div>`;
+  }
+  const it=Q.items[Q.i],listen=Q.mode==='listen';
+  const opts=it.opts.map((o,k)=>{let c='';if(Q.picked!==null){if(k===it.ans)c='ok';else if(k===Q.picked)c='no'}
+    return `<button class="opt ${listen?'':'ta'} ${c}" type="button" data-act="pick" data-v="${k}" ${Q.picked!==null?'disabled':''}>${esc(listen?o.en:o.ta)}</button>`}).join('');
+  return `<div class="card stack"><div class="qtop"><span>கேள்வி ${Q.i+1} / 10</span><span>மதிப்பெண் ${Q.score}</span></div><div class="qbar"><i style="width:${Q.i/10*100}%"></i></div>
+   <div class="qprompt">${listen?`<button class="bigspk" type="button" data-say="${esc(it.w.en)}" aria-label="Play word">${ICON.spk}</button><span class="ta muted">கேட்டு, சரியான சொல்லைத் தேர்ந்தெடுங்கள்</span>`
+    :`<div class="qw">${esc(it.w.en)}</div>${spkBtn(it.w.en,'Play word')}<span class="ta muted">இதன் சரியான ஒலி எது?</span>`}</div>
+   <div class="opts">${opts}</div>
+   <div class="fb" id="fb">${Q.picked===null?'':Q.picked===it.ans?'<span style="color:var(--good)">சரி!</span>':`<span style="color:var(--bad)">தவறு. சரியானது: ${esc(listen?it.w.en+' ('+it.w.ta+')':it.w.ta)}</span>`}</div>
+   ${Q.picked!==null?`<div class="row" style="justify-content:center"><button class="btn" type="button" data-act="qnext">${Q.i===9?'முடிவைப் பார்':'அடுத்தது'}</button></div>`:''}
+   <div class="row" style="justify-content:center"><button class="btn ghost" type="button" data-act="qexit" style="padding:6px 14px;font-size:.82rem">வெளியேறு</button></div></div>`;
+}
+
+/* ---------- router ---------- */
+const NAV=[['home','முகப்பு','Home'],['plan','திட்டம்','Plan'],['letters','எழுத்துகள்','Letters'],['practice','பயிற்சி','Quiz'],['read','வாசிப்பு','Read']];
+function route(){const h=(location.hash||'#home').slice(1);const m=h.match(/^day-(\d+)$/);return m?{v:'day',n:+m[1]}:{v:NAV.some(x=>x[0]===h)?h:'home'}}
+function render(){
+  clearInterval(timer);timer=null;
+  const r=route();const app=document.getElementById('app');
+  app.innerHTML=r.v==='home'?vHome():r.v==='plan'?vPlan():r.v==='day'?vDay(r.n):r.v==='letters'?vLetters():r.v==='practice'?vPractice():vRead();
+  const cur=r.v==='day'?'plan':r.v;
+  document.getElementById('nav').innerHTML=NAV.map(([k,ta,en])=>`<a href="#${k}" ${k===cur?'aria-current="page"':''}>${ta}<small>${en}</small></a>`).join('');
+  document.title='Angilam Padippom';
+}
+function rerender(){const y=window.scrollY;render();window.scrollTo(0,y)}
+window.addEventListener('hashchange',()=>{shuffleSeed=false;if(route().v!=='practice')Q=null;render();window.scrollTo(0,0)});
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-say],[data-act]');if(!el)return;
+  if(el.dataset.say){
+    say(el.dataset.say);
+    if(el.dataset.rep){const k=el.dataset.rep;reps[k]=Math.min(5,(reps[k]||0)+1);el.querySelectorAll('.dots i').forEach((d,i)=>d.classList.toggle('f',i<reps[k]))}
+    return;
+  }
+  const a=el.dataset.act,r=route(),n=r.n;
+  if(a==='task'){const k=el.dataset.k;S.tasks[k]=!S.tasks[k];save();rerender()}
+  else if(a==='complete'){if(S.done[n])delete S.done[n];else{S.done[n]=todayStr();toast('வாழ்த்துகள்! Day '+n+' முடிந்தது')}save();rerender()}
+  else if(a==='rate'){S.rating[n]=+el.dataset.v;save();rerender()}
+  else if(a==='shuffle'){shuffleSeed=true;rerender()}
+  else if(a==='cnt'){S.counter[n]=Math.max(0,(S.counter[n]||0)+ +el.dataset.v);save();rerender()}
+  else if(a==='reveal'){el.hidden=true;el.nextElementSibling.hidden=false}
+  else if(a==='apple'){const h=document.getElementById('hero');h.classList.add('play');say('apple');setTimeout(()=>h.classList.remove('play'),2200)}
+  else if(a==='timer'){
+    const b=document.getElementById('tbtn'),tm=document.getElementById('tm');
+    if(timer){clearInterval(timer);timer=null;const s=parseFloat(tm.textContent);b.textContent='மீண்டும் தொடங்கு';
+      if(s>0&&(!S.speed[n]||s<S.speed[n])){S.speed[n]=s;save();toast('புதிய சிறந்த நேரம்: '+s+' வினாடி')}}
+    else{const t0=performance.now();b.textContent='நிறுத்து';timer=setInterval(()=>{tm.textContent=((performance.now()-t0)/1000).toFixed(1)+'s'},100)}
+  }
+  else if(a==='pool'){qopt.pool=el.dataset.v;rerender()}
+  else if(a==='quiz'){startQuiz(el.dataset.v);rerender();if(Q.mode==='listen')say(Q.items[0].w.en)}
+  else if(a==='pick'){const it=Q.items[Q.i];Q.picked=+el.dataset.v;if(Q.picked===it.ans)Q.score++;rerender()}
+  else if(a==='qnext'){Q.i++;Q.picked=null;if(Q.i>=10){if(Q.score>(S.best[Q.mode]||0)){S.best[Q.mode]=Q.score;save()}}rerender();if(Q.i<10&&Q.mode==='listen')say(Q.items[Q.i].w.en)}
+  else if(a==='qexit'){Q=null;rerender()}
+});
+const slowBtn=document.getElementById('slow');
+slowBtn.setAttribute('aria-pressed',!!S.slow);
+slowBtn.addEventListener('click',()=>{S.slow=!S.slow;save();slowBtn.setAttribute('aria-pressed',!!S.slow);toast(S.slow?'மெதுவான ஒலி இயக்கப்பட்டது':'சாதாரண வேகம்')});
+render();
+</script>
