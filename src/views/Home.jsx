@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useApp } from '../lib/context.js'
 import { DAYS } from '../data/days.js'
 import { TOTAL, doneCount, nextDay, streak } from '../lib/progress.js'
+import { reviewQueue, srsStats } from '../lib/srs.js'
 import Sync from '../components/Sync.jsx'
 import Backup from '../components/Backup.jsx'
 import { SpeakerIcon } from '../components/Icons.jsx'
@@ -12,6 +13,7 @@ export default function Home() {
   const { S, say } = useApp()
   const [play, setPlay] = useState(false)
   const dc = doneCount(S), pct = dc / TOTAL, nd = nextDay(S)
+  const rq = reviewQueue(S), st = srsStats(S)
   const R = 48, C = 2 * Math.PI * R
   const apple = () => { setPlay(true); say('apple'); setTimeout(() => setPlay(false), 2200) }
   return (
@@ -57,6 +59,24 @@ export default function Home() {
             <a className="btn" href={'#day-' + nd}>இன்றைய பாடம்</a>
           </div>
         ) : <div className="celebrate"><h3 className="ta">வாழ்த்துகள்! 30 நாட்களும் முடிந்தன.</h3></div>}
+      </section>
+
+      <section className="card stack reviewcard">
+        <div className="next">
+          <div>
+            <h3 className="ta">இன்றைய மறுபார்வை <small className="muted" style={{ fontFamily: 'var(--f-body)', fontWeight: 400, fontSize: '.8rem' }}>Daily review</small></h3>
+            <p className="ta muted" style={{ fontSize: '.92rem', marginTop: 4 }}>
+              {rq.available
+                ? `${rq.available} வார்த்தைகள் காத்திருக்கின்றன. மறந்தவற்றை சரியான நேரத்தில் மீண்டும் பார்த்தால் நீண்ட நாள் நினைவிருக்கும்.`
+                : doneCount(S) ? 'இன்றைய மறுபார்வை முடிந்தது. நாளை மீண்டும் வாருங்கள்.' : 'ஒரு நாளை முடித்தால், அதன் வார்த்தைகள் மறுபார்வைக்கு வரும்.'}
+            </p>
+          </div>
+          <a className={'btn' + (rq.available ? ' mark' : ' ghost')} href="#review">{rq.available ? 'தொடங்கு' : 'திற'}</a>
+        </div>
+        <div className="stats">
+          <div className="stat"><b>{st.mastered}</b><span>நன்கு தெரிந்தவை</span></div>
+          <div className="stat"><b>{st.tricky}</b><span>கடினமான வார்த்தைகள்</span></div>
+        </div>
       </section>
 
       <section className="card stack">

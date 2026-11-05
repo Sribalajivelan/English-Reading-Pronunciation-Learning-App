@@ -298,3 +298,33 @@ details.tip ul{padding-left:20px}
 .syncstate{font-weight:700}
 .syncstate.synced{color:var(--good)}
 .syncstate.error{color:var(--bad)}
+
+/* meanings, speaking check, review */
+.wbtns{display:flex;gap:6px;flex:none}
+.w .spk,.w .wt .spk{width:32px;height:32px}
+.mean{font-size:.9rem;color:var(--ink);opacity:.85;line-height:1.35}
+.spk.mic{background:var(--mark-soft);color:var(--mark-ink)}
+.spk.mic.on{background:var(--bad);color:#fff;animation:pulse 1s ease-in-out infinite}
+.spk.big{width:56px;height:56px}
+.spk.big svg{width:26px;height:26px}
+@keyframes pulse{50%{box-shadow:0 0 0 8px color-mix(in srgb,var(--bad) 25%,transparent)}}
+.fbline{font-size:.82rem;font-weight:700;line-height:1.35}
+.fbline.ok{color:var(--good)}
+.fbline.close{color:var(--mark-ink)}
+.fbline.miss{color:var(--bad)}
+.fbline.listening{color:var(--accent)}
+.line .en button.hit{color:var(--good)}
+.line .en button.miss{color:var(--bad);text-decoration:underline wavy;text-underline-offset:4px}
+.wordinfo{background:var(--soft);border-radius:12px;padding:10px 14px;display:flex;gap:6px 12px;flex-wrap:wrap;align-items:baseline;min-height:44px;font-size:.95rem}
+.wordinfo .eng{font-family:var(--f-body);font-size:1.1rem;font-weight:600}
+.wordinfo .rd2{color:var(--accent);font-weight:700}
+.rcard .qw{font-size:clamp(2.2rem,10vw,3.4rem)}
+.answer{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;background:var(--soft);border-radius:14px;padding:16px}
+.answer .tam{font-family:var(--f-ta);font-weight:700;color:var(--accent);font-size:1.5rem}
+.answer .mean{font-size:1.1rem;opacity:1}
+.grade{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grade .btn{justify-content:center;flex-direction:column;gap:0;padding:12px 8px;line-height:1.3}
+.grade .btn small{font-family:var(--f-body);font-weight:400;font-size:.7rem;opacity:.85}
+a.mode{text-decoration:none;color:inherit;margin-bottom:12px;border-color:var(--mark);background:var(--mark-soft)}
+a.mode h3{color:var(--mark-ink)}
+.reviewcard .next{align-items:flex-start}

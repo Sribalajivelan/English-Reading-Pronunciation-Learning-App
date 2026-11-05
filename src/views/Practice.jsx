@@ -4,6 +4,8 @@ import { DAYS } from '../data/days.js'
 import { TOTAL, shuf } from '../lib/progress.js'
 import { SpeakerIcon } from '../components/Icons.jsx'
 import SpeakButton from '../components/SpeakButton.jsx'
+import { meaningOf } from '../data/meanings.js'
+import { record, reviewQueue } from '../lib/srs.js'
 
 function poolWords(S, mode) {
   const lastDone = Math.max(0, ...Object.keys(S.done).map(Number))
@@ -34,7 +36,11 @@ export default function Practice() {
   const [Q, setQ] = useState(null)
 
   const start = mode => { const q = buildQuiz(S, mode, pool); setQ(q); if (mode === 'listen') say(q.items[0].w.en) }
-  const pick = k => setQ(q => ({ ...q, picked: k, score: q.score + (k === q.items[q.i].ans ? 1 : 0) }))
+  const pick = k => {
+    const it = Q.items[Q.i], ok = k === it.ans
+    update(x => record(x, it.w.en, ok))       // missed words come back in the daily review
+    setQ(q => ({ ...q, picked: k, score: q.score + (ok ? 1 : 0) }))
+  }
   const next = () => {
     const i = Q.i + 1
     if (i >= 10 && Q.score > (S.best[Q.mode] || 0)) update(x => { x.best[Q.mode] = Q.score })
@@ -54,6 +60,10 @@ export default function Practice() {
           </div>
           <span className="muted" style={{ fontSize: '.8rem' }}>{poolWords(S, pool).length} words</span>
         </div>
+        <a className="mode review" href="#review">
+          <h3 className="ta">இன்றைய மறுபார்வை</h3>
+          <p>{reviewQueue(S).available ? reviewQueue(S).available + ' வார்த்தைகள் காத்திருக்கின்றன. தவறவிட்டவை, மறக்கும் நேரத்தில் மீண்டும் வரும்.' : 'இன்று மறுபார்வை எதுவும் இல்லை.'}</p>
+        </a>
         <div className="modes">
           <button className="mode" type="button" onClick={() => start('listen')}>
             <h3 className="ta">கேட்டுத் தேர்ந்தெடு</h3><p>ஒலியைக் கேட்டு, சரியான ஆங்கிலச் சொல்லைத் தேர்ந்தெடுங்கள்.</p>
@@ -110,6 +120,7 @@ export default function Practice() {
         {Q.picked !== null && (Q.picked === it.ans
           ? <span style={{ color: 'var(--good)' }}>சரி!</span>
           : <span style={{ color: 'var(--bad)' }}>தவறு. சரியானது: {listen ? it.w.en + ' (' + it.w.ta + ')' : it.w.ta}</span>)}
+        {Q.picked !== null && meaningOf(it.w.en) && <span className="mean ta" style={{ display: 'block', fontWeight: 400 }}>{it.w.en}: {meaningOf(it.w.en)}</span>}
       </div>
       {Q.picked !== null && <div className="row" style={{ justifyContent: 'center' }}><button className="btn" type="button" onClick={next}>{Q.i === 9 ? 'முடிவைப் பார்' : 'அடுத்தது'}</button></div>}
       <div className="row" style={{ justifyContent: 'center' }}><button className="btn ghost" type="button" style={{ padding: '6px 14px', fontSize: '.82rem' }} onClick={() => setQ(null)}>வெளியேறு</button></div>

@@ -11,6 +11,7 @@ import Day from './views/Day.jsx'
 import Letters from './views/Letters.jsx'
 import Practice from './views/Practice.jsx'
 import Read from './views/Read.jsx'
+import Review from './views/Review.jsx'
 
 export default function App() {
   const [S, update, saveOk, replace] = useProgress()
@@ -28,8 +29,8 @@ export default function App() {
   useEffect(() => () => clearTimeout(timer.current), [])
 
   const ctx = { S, update, say, toast, saveOk, sync }
-  const cur = route.v === 'day' ? 'plan' : route.v
-  const view = { home: <Home />, plan: <Plan />, letters: <Letters />, practice: <Practice />, read: <Read /> }
+  const cur = route.v === 'day' ? 'plan' : route.v === 'review' ? 'practice' : route.v
+  const view = { home: <Home />, plan: <Plan />, letters: <Letters />, practice: <Practice />, read: <Read />, review: <Review /> }
 
   return (
     <AppCtx.Provider value={ctx}>

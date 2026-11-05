@@ -35,7 +35,7 @@ export default function Backup() {
     const f = e.target.files?.[0]; e.target.value = ''
     if (f) restore(await f.text())
   }
-  const reset = () => { update(x => { Object.assign(x, { done: {}, tasks: {}, rating: {}, best: {}, counter: {}, speed: {} }) }); setConfirm(false); toast('முன்னேற்றம் அழிக்கப்பட்டது') }
+  const reset = () => { update(x => { Object.assign(x, { done: {}, tasks: {}, rating: {}, best: {}, counter: {}, speed: {}, srs: {} }) }); setConfirm(false); toast('முன்னேற்றம் அழிக்கப்பட்டது') }
 
   const saved = S.saved ? new Date(S.saved).toLocaleString('ta-IN', { dateStyle: 'medium', timeStyle: 'short' }) : '—'
   return (

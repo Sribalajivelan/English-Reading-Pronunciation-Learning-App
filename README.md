@@ -6,6 +6,10 @@ React + Vite, mobile first (tested from 320px phones to desktop).
 - 30-day plan with task checklists, progress and streak
 - A–Z letter sounds with Tamil guides, short/long sound buttons and consonant + vowel drills
 - Tap-to-hear words (with a "say it 5 times" tracker), patterns, sentences and short stories
+- Tamil meaning on every word (`src/data/meanings.js`), and tap any word in a story to see its sound and meaning
+- Daily review with spaced repetition: words you miss in quizzes or reviews come back after 1, 2, 4, 7, 15, 30 days
+- "Say it" check: the mic button listens to you say a word or read a sentence and shows what was heard
+  (uses the browser's speech recognition: works in Chrome and Edge, and Android Chrome; the button is hidden elsewhere)
 - Listen and read quizzes with saved best scores
 - Slow-speech switch; light and dark themes follow the device
 

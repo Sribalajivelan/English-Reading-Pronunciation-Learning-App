@@ -6,15 +6,15 @@ const BAK = 'ap-v1-bak'
 export const TOTAL = 30
 const VERSION = 2
 
-const MAPS = ['done', 'tasks', 'rating', 'best', 'counter', 'speed']
+const MAPS = ['done', 'tasks', 'rating', 'best', 'counter', 'speed', 'srs']
 
-const EMPTY = { v: VERSION, done: {}, tasks: {}, rating: {}, best: {}, counter: {}, speed: {}, ts: {}, slow: false, voice: '', saved: '' }
+const EMPTY = { v: VERSION, done: {}, tasks: {}, rating: {}, best: {}, counter: {}, speed: {}, srs: {}, ts: {}, slow: false, voice: '', saved: '' }
 
 /** Fill in any missing fields so older saves keep working. */
 function normalize(s) {
   s = s && typeof s === 'object' ? s : {}
   const o = (k) => (s[k] && typeof s[k] === 'object' ? s[k] : {})
-  return { ...EMPTY, ...s, v: VERSION, done: o('done'), tasks: o('tasks'), rating: o('rating'), best: o('best'), counter: o('counter'), speed: o('speed'), ts: o('ts') }
+  return { ...EMPTY, ...s, v: VERSION, done: o('done'), tasks: o('tasks'), rating: o('rating'), best: o('best'), counter: o('counter'), speed: o('speed'), srs: o('srs'), ts: o('ts') }
 }
 
 function read(key) {
@@ -107,7 +107,7 @@ export function parseBackup(text) {
   } catch { return null }
 }
 
-const syncKeys = ['done', 'tasks', 'rating', 'best', 'counter', 'speed', 'ts']
+const syncKeys = ['done', 'tasks', 'rating', 'best', 'counter', 'speed', 'srs', 'ts']
 /** The part of progress that is shared between devices (not voice or speed settings). */
 export function syncPart(S) {
   const n = normalize(S)
@@ -123,6 +123,7 @@ export function canon(S) {
 const tie = {
   done: (a, b) => (a < b ? a : b), tasks: () => true, rating: (_, b) => b,
   best: Math.max, counter: Math.max, speed: Math.min,
+  srs: (a, b) => (a.b >= b.b ? a : b),
 }
 
 /** Combine two saves. For each item the newest change wins, including deletions (un-ticking, reset). */
