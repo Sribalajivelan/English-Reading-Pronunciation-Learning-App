@@ -4,7 +4,7 @@ import { DAYS } from '../data/days.js'
 const KEY = 'ap-v1'
 export const TOTAL = 30
 
-const EMPTY = { done: {}, tasks: {}, rating: {}, best: {}, counter: {}, speed: {}, slow: false }
+const EMPTY = { done: {}, tasks: {}, rating: {}, best: {}, counter: {}, speed: {}, slow: false, voice: '' }
 
 function load() {
   try {
