@@ -10,3 +10,15 @@ export const VSND={A:[['short','அ','uh'],['apple','ஆ','ah'],['long','ஏ','a
 export const CSND={B:['buh'],C:['kuh','sss'],D:['duh'],F:['fff'],G:['guh'],H:['huh'],J:['juh'],K:['kuh'],L:['lll'],M:['mmm'],N:['nnn'],P:['puh'],Q:['kwuh'],R:['rrr'],S:['sss'],T:['tuh'],V:['vvv'],W:['wuh'],X:['ks'],Y:['yuh'],Z:['zzz']};
 export const LETTERS=LET.split(';').map(s=>{const p=s.split('|');return{l:p[0],ta:p[1],ex:[[p[2],p[3]],p[4]?[p[4],p[5]]:null].filter(Boolean),vowel:'AEIOU'.includes(p[0])}});
 export const LMAP=Object.fromEntries(LETTERS.map(x=>[x.l,x]));
+
+// Real short words that begin with each consonant + vowel pattern (a, e, i, o, u).
+// Speech voices read real words reliably, but read invented syllables like "tih" unpredictably.
+export const CVW = {
+  B: ['bat', 'bed', 'bit', 'box', 'bus'], C: ['cat', 'cell', 'city', 'cot', 'cup'], D: ['dad', 'den', 'dip', 'dog', 'duck'],
+  F: ['fan', 'fed', 'fit', 'fox', 'fun'], G: ['gap', 'get', 'gift', 'got', 'gum'], H: ['hat', 'hen', 'hit', 'hot', 'hut'],
+  J: ['jam', 'jet', 'jig', 'job', 'jug'], K: ['kangaroo', 'kettle', 'kit', 'koala', 'kudos'], L: ['lap', 'leg', 'lip', 'log', 'luck'],
+  M: ['map', 'men', 'mix', 'mop', 'mud'], N: ['nap', 'net', 'nip', 'not', 'nut'], P: ['pat', 'pen', 'pin', 'pot', 'pug'],
+  R: ['rat', 'red', 'rip', 'rock', 'rug'], S: ['sat', 'set', 'sit', 'sock', 'sun'], T: ['tap', 'ten', 'tip', 'top', 'tub'],
+  V: ['van', 'vet', 'visit', 'volcano', 'vulture'], W: ['wax', 'wet', 'win', 'wok', 'wolf'], Y: ['yak', 'yes', 'yip', 'yonder', 'yuck'],
+  Z: ['zap', 'zest', 'zip', 'zombie', 'zucchini'],
+}

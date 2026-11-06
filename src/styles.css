@@ -369,3 +369,30 @@ a.mode h3{color:var(--mark-ink)}
 /* offline / install */
 .offline{background:var(--mark);color:#3a2600;font-size:.85rem;font-weight:500;text-align:center;padding:8px max(16px,env(safe-area-inset-left,0px));margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)))}
 .installcard .next{align-items:flex-start}
+
+/* long-press explanation */
+.exchip{border:1px solid var(--line);background:transparent;border-radius:10px;padding:5px 10px;line-height:1.25;text-align:left;
+  -webkit-touch-callout:none;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+.exchip b{font-weight:500;margin-right:6px}
+.exchip span{font-family:var(--f-ta);color:var(--accent);font-weight:700;font-size:.85rem}
+.exchip:active{background:var(--soft)}
+.holdhint{font-size:.72rem;color:var(--muted)}
+.sheet-back{position:fixed;inset:0;z-index:40;background:rgba(8,20,17,.55);display:flex;align-items:flex-end;justify-content:center;animation:fadein .15s}
+.sheet{background:var(--surface);color:var(--ink);width:min(560px,100%);max-height:88vh;overflow:auto;border-radius:22px 22px 0 0;
+  padding:20px max(20px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));
+  display:flex;flex-direction:column;gap:12px;animation:slideup .2s ease-out}
+.sheet-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.sheet-head h3{font-size:1.6rem;margin-top:2px}
+.sheet-head .arrow{color:var(--muted)}
+.sheet-head .tamw{color:var(--accent)}
+.sheet-sound{background:var(--mark-soft);color:var(--mark-ink);border-radius:12px;padding:8px 14px}
+.sheet-why{font-size:1rem;line-height:1.7}
+.sheet-tip{background:var(--soft);border-radius:12px;padding:10px 14px;font-size:.92rem}
+.sheet-compare{display:flex;flex-direction:column;gap:8px}
+.cmp{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:transparent;border-radius:12px;padding:6px 12px 6px 8px}
+.cmp svg{width:16px;height:16px;color:var(--accent)}
+.cmp b{font-weight:500}
+.cmp span{color:var(--accent);font-weight:700;font-size:.9rem}
+@keyframes slideup{from{transform:translateY(40px);opacity:.6}}
+@keyframes fadein{from{opacity:0}}
+@media (min-width:720px){.sheet-back{align-items:center}.sheet{border-radius:22px}}
