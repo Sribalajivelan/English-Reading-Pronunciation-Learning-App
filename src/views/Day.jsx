@@ -8,6 +8,8 @@ import WordCard from '../components/WordCard.jsx'
 import Reader from '../components/Reader.jsx'
 import Plan from './Plan.jsx'
 import { BackIcon, CheckIcon, SpeakerIcon } from '../components/Icons.jsx'
+import TaSpeak from '../components/TaSpeak.jsx'
+import { dayDone } from '../data/persona.js'
 
 const Section = ({ title, sub, children }) => (
   <section className="card sec"><h3>{title}{sub && <> <small>{sub}</small></>}</h3>{children}</section>
@@ -65,7 +67,7 @@ function Summary() {
 }
 
 export default function Day({ n }) {
-  const { S, update, toast, say } = useApp()
+  const { S, update, cheer, say } = useApp()
   const d = DAYS[n]
   const [seed, setSeed] = useState(0)
   const [reps, setReps] = useState({})
@@ -78,7 +80,7 @@ export default function Day({ n }) {
   const toggleTask = k => update(x => { x.tasks[k] = !x.tasks[k] })
   const complete = () => {
     update(x => { if (x.done[n]) delete x.done[n]; else x.done[n] = todayStr() })
-    if (!done) toast('வாழ்த்துகள்! Day ' + n + ' முடிந்தது')
+    if (!done) cheer(dayDone(n, n))
   }
   const count = S.counter[n] || 0
 
@@ -96,11 +98,12 @@ export default function Day({ n }) {
           {d.tasks.map((t, i) => {
             const k = n + '-' + i, on = !!S.tasks[k]
             return (
-              <li key={k}>
+              <li key={k} className="taskrow">
                 <button type="button" className={on ? 'on' : ''} aria-pressed={on} onClick={() => toggleTask(k)}>
                   <span className="bx"><CheckIcon /></span>
                   <span><span className="te">{t[0]}</span><span className="tt2">{t[1]}</span></span>
                 </button>
+                <TaSpeak text={t[1]} />
               </li>
             )
           })}

@@ -5,6 +5,9 @@ import { addDays, nextDueDate, record, reviewQueue } from '../lib/srs.js'
 import { todayStr } from '../lib/progress.js'
 import MicButton, { WordFeedback } from '../components/MicButton.jsx'
 import { BackIcon, SpeakerIcon } from '../components/Icons.jsx'
+import Mathi from '../components/Mathi.jsx'
+import TaSpeak from '../components/TaSpeak.jsx'
+import { roundEnd } from '../data/persona.js'
 
 function Card({ w, onGrade, isRetry }) {
   const { say } = useApp()
@@ -29,7 +32,7 @@ function Card({ w, onGrade, isRetry }) {
           <>
             <div className="answer">
               <span className="tam">{w.ta}</span>
-              <span className="mean ta">{w.meaning}</span>
+              <span className="mean ta">{w.meaning} <TaSpeak text={w.meaning} /></span>
               {w.h && <span className="hint">{w.h}</span>}
             </div>
             <div className="grade">
@@ -83,7 +86,7 @@ export default function Review() {
         <div className="card stack" style={{ textAlign: 'center', alignItems: 'center' }}>
           <span className="eyebrow">மறுபார்வை முடிந்தது</span>
           <div className="score">{good}/{total}</div>
-          <p className="ta" style={{ fontWeight: 700 }}>{good === total ? 'அருமை! எல்லாம் நினைவிருக்கிறது.' : 'தவறவிட்ட வார்த்தைகள் நாளை மீண்டும் வரும்.'}</p>
+          <Mathi text={roundEnd(good, total, good)} autoSpeak compact />
           <div className="row"><a className="btn" href="#home">முகப்பு</a><a className="btn ghost" href="#practice">பயிற்சித் தேர்வு</a></div>
         </div>
       </>

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { AppCtx } from './lib/context.js'
 import { useProgress } from './lib/progress.js'
 import { useSync } from './lib/sync.js'
-import { speak, hasTTS } from './lib/speech.js'
+import { speak, speakMixed, hasTTS } from './lib/speech.js'
 import { loadClips, playClip } from './lib/clips.js'
 import { useOnline } from './lib/pwa.js'
 import ExplainSheet from './components/ExplainSheet.jsx'
@@ -36,6 +36,13 @@ export default function App() {
     timer.current = setTimeout(() => setMsg(''), 2200)
   }, [])
   const say = useCallback((t, clip) => { if (clip && playClip(clip, S.slow)) return; if (!speak(t, S.slow, S.voice)) toast(hasTTS ? 'ஒலி இயக்க முடியவில்லை' : 'இந்த உலாவியில் ஒலி வசதி இல்லை') }, [S.slow, S.voice, toast])
+  const sayTa = useCallback(text => {
+    const r = speakMixed(text, { slow: S.slow, voice: S.voice, voiceTa: S.voiceTa })
+    if (r === 'no-tamil') toast('இந்தச் சாதனத்தில் தமிழ்க் குரல் இல்லை. "குரல்" பொத்தானில் விவரம் உள்ளது.')
+    else if (r === 'unsupported') toast('இந்த உலாவியில் ஒலி வசதி இல்லை')
+  }, [S.slow, S.voice, S.voiceTa, toast])
+  /** Show a short message from the teacher, and read it aloud if the learner turned that on. */
+  const cheer = useCallback(text => { toast(text); if (S.autoTalk) sayTa(text) }, [S.autoTalk, sayTa, toast])
   useEffect(() => () => clearTimeout(timer.current), [])
   useEffect(() => { loadClips() }, [])
 
@@ -43,7 +50,7 @@ export default function App() {
     const x = LMAP[L]
     setSheet({ letter: L, word, wordTa, note: explainFor(L, word, wordTa, x.ta, x.vowel) })
   }, [])
-  const ctx = { S, update, say, toast, saveOk, sync, explain }
+  const ctx = { S, update, say, sayTa, cheer, toast, saveOk, sync, explain }
   const cur = { day: 'plan', review: 'practice', spelling: 'practice', sounds: 'letters', record: 'letters' }[route.v] || route.v
   const view = { home: <Home />, plan: <Plan />, letters: <Letters />, practice: <Practice />, read: <Read />, review: <Review />, sounds: <Sounds />, spelling: <Spelling />, record: <Record /> }
 

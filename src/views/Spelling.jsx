@@ -5,6 +5,8 @@ import { meaningOf } from '../data/meanings.js'
 import { TOTAL, shuf } from '../lib/progress.js'
 import { record } from '../lib/srs.js'
 import { BackIcon, SpeakerIcon } from '../components/Icons.jsx'
+import Mathi from '../components/Mathi.jsx'
+import { roundEnd } from '../data/persona.js'
 
 /** Simple letters-only words that can be typed from hearing them. */
 function spellWords(S) {
@@ -62,7 +64,7 @@ export default function Spelling() {
         <div className="card stack" style={{ textAlign: 'center', alignItems: 'center' }}>
           <span className="eyebrow">முடிவு</span>
           <div className="score">{Q.score}/{Q.items.length}</div>
-          <p className="ta" style={{ fontWeight: 700 }}>{Q.score >= 9 ? 'அருமை!' : Q.score >= 6 ? 'நன்று! தொடருங்கள்.' : 'எழுதிப் பழகுங்கள். தவறியவை மறுபார்வையில் வரும்.'}</p>
+          <Mathi text={roundEnd(Q.score, Q.items.length, Q.score)} autoSpeak compact />
           <div className="row"><button className="btn" type="button" onClick={start}>மீண்டும்</button><a className="btn ghost" href="#practice">முடி</a></div>
         </div>
       </>

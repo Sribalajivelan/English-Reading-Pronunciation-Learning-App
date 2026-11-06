@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useApp } from '../lib/context.js'
 import { useListen } from '../lib/useListen.js'
 import { SOUNDS } from '../data/sounds.js'
+import TaSpeak from '../components/TaSpeak.jsx'
 import LettersTabs from '../components/LettersTabs.jsx'
 import MicButton, { WordFeedback } from '../components/MicButton.jsx'
 import { SpeakerIcon } from '../components/Icons.jsx'
@@ -88,7 +89,8 @@ export default function Sounds() {
         <section className="card sec snd-card" key={s.id} id={'s-' + s.id}>
           <div className="sh">
             <span className="symb">{s.sym}</span>
-            <div><h3 className="ta">{s.title}</h3><span className="ta muted" style={{ fontSize: '.85rem' }}>{s.sub}</span></div>
+            <div style={{ flex: 1, minWidth: 0 }}><h3 className="ta">{s.title}</h3><span className="ta muted" style={{ fontSize: '.85rem' }}>{s.sub}</span></div>
+            <TaSpeak text={[s.mistake, ...s.steps].join(' ')} label="தமிழில் கேள்" withLabel />
           </div>
           <p className="mistake ta"><b>பொதுவான தவறு:</b> {s.mistake}</p>
           <div>

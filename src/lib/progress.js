@@ -8,7 +8,7 @@ const VERSION = 2
 
 const MAPS = ['done', 'tasks', 'rating', 'best', 'counter', 'speed', 'srs']
 
-const EMPTY = { v: VERSION, done: {}, tasks: {}, rating: {}, best: {}, counter: {}, speed: {}, srs: {}, ts: {}, slow: false, voice: '', saved: '' }
+const EMPTY = { v: VERSION, done: {}, tasks: {}, rating: {}, best: {}, counter: {}, speed: {}, srs: {}, ts: {}, slow: false, voice: '', voiceTa: '', autoTalk: false, saved: '' }
 
 /** Fill in any missing fields so older saves keep working. */
 function normalize(s) {
@@ -73,7 +73,7 @@ export function useProgress() {
   /** Replace progress with an already merged copy (used by cloud sync). Keeps this device's voice settings. */
   const replace = useCallback(next => {
     setS(prev => {
-      const n = { ...normalize(next), slow: prev.slow, voice: prev.voice, saved: new Date().toISOString() }
+      const n = { ...normalize(next), slow: prev.slow, voice: prev.voice, voiceTa: prev.voiceTa, autoTalk: prev.autoTalk, saved: new Date().toISOString() }
       setSaveOk(write(n))
       return n
     })

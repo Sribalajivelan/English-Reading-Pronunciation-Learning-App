@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useApp } from '../lib/context.js'
 import { SpeakerIcon } from './Icons.jsx'
+import TaSpeak from './TaSpeak.jsx'
 
 /** Bottom sheet that explains why an example word sounds the way it does. */
 export default function ExplainSheet({ info, onClose }) {
@@ -23,7 +24,7 @@ export default function ExplainSheet({ info, onClose }) {
           </div>
           <button ref={close} className="btn ghost" type="button" onClick={onClose}>மூடு</button>
         </div>
-        <p className="sheet-sound ta"><b>{note.sound}</b></p>
+        <p className="sheet-sound ta"><b>{note.sound}</b> <TaSpeak text={[note.sound, note.why, note.tip].filter(Boolean).join('. ')} label="விளக்கத்தைத் தமிழில் கேள்" withLabel /></p>
         <p className="ta sheet-why">{note.why}</p>
         {note.tip && <p className="ta sheet-tip"><b>குறிப்பு:</b> {note.tip}</p>}
         <div className="sheet-compare">

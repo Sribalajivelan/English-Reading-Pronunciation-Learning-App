@@ -6,6 +6,7 @@ import { norm, canRecognize } from '../lib/recognize.js'
 import SpeakButton from './SpeakButton.jsx'
 import MicButton from './MicButton.jsx'
 import { SpeakerIcon } from './Icons.jsx'
+import TaSpeak from './TaSpeak.jsx'
 
 const clean = t => norm(t).replace(/'/g, '')
 
@@ -59,11 +60,11 @@ export default function Reader({ p }) {
       </div>
       <div className="wordinfo ta" aria-live="polite">
         {i
-          ? <><b className="eng">{i.en}</b>{i.ta && <span className="rd2">{i.ta}</span>}<span>{i.meaning || 'பொருள் இன்னும் சேர்க்கப்படவில்லை'}</span></>
+          ? <><b className="eng">{i.en}</b>{i.ta && <span className="rd2">{i.ta}</span>}<span>{i.meaning || 'பொருள் இன்னும் சேர்க்கப்படவில்லை'}</span>{i.meaning && <TaSpeak text={i.meaning} />}</>
           : <span className="muted">ஒரு வார்த்தையைத் தொட்டால் ஒலி, வாசிப்பு, பொருள் தெரியும்.{canRecognize ? ' மைக் பொத்தானால் வாக்கியத்தை நீங்களே படித்துப் பாருங்கள்.' : ''}</span>}
       </div>
       {lines.map(([en, rd, mn], k) => <Line key={k} en={en} rd={rd} mn={mn} onWord={setInfo} />)}
-      {p.sum && <details className="qa"><summary>தமிழ் பொருள்</summary><p>{p.sum}</p></details>}
+      {p.sum && <details className="qa"><summary>தமிழ் பொருள்</summary><p>{p.sum}</p><TaSpeak text={p.sum} label="தமிழில் கேள்" withLabel /></details>}
       {p.q && (
         <div className="qa">
           <div><b>Q:</b> {p.q[0]} <span className="muted">({p.q[1]})</span></div>

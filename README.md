@@ -12,6 +12,7 @@ React + Vite, mobile first (tested from 320px phones to desktop).
   (uses the browser's speech recognition: works in Chrome and Edge, and Android Chrome; the button is hidden elsewhere)
 - **Hard sounds** (கடினமான ஒலிகள், Letters tab): mouth-position steps, the common Tamil-speaker mistake and "which word did you hear?" games for F, V/W, Z, TH, short A, I/EE, SH/CH/S, R/L, B/P, D/T and S-clusters
 - **Spelling practice**: hear a word, type it, with a Tamil meaning hint and letter-by-letter feedback
+- **Tamil voice and a teacher persona ("மதி")**: speaker buttons read Tamil explanations aloud (tasks, sound coaching, long-press notes, story translations, meanings), switching to an English voice for English words inside the sentence. மதி greets the learner on Home and encourages after quizzes, reviews, spelling and finished days; she can speak results automatically (off by default). Uses a Tamil voice installed on the device (Android and iPhone have them); learners can choose the Tamil voice in the குரல் panel
 - **Works offline and installs like an app** (PWA): lessons, review and quizzes work without internet
 - Listen and read quizzes with saved best scores
 - Slow-speech switch; light and dark themes follow the device

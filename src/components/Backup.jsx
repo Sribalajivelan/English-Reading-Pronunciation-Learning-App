@@ -28,7 +28,7 @@ export default function Backup() {
   const restore = raw => {
     const b = parseBackup(raw)
     if (!b) { toast('இந்தக் குறியீடு சரியானதல்ல'); return false }
-    update(x => { Object.assign(x, mergeProgress(x, b), { slow: x.slow, voice: x.voice }) })
+    update(x => { Object.assign(x, mergeProgress(x, b), { slow: x.slow, voice: x.voice, voiceTa: x.voiceTa, autoTalk: x.autoTalk }) })
     toast('முன்னேற்றம் சேர்க்கப்பட்டது'); return true
   }
   const onFile = async e => {

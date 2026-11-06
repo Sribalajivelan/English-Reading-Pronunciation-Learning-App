@@ -396,3 +396,25 @@ a.mode h3{color:var(--mark-ink)}
 @keyframes slideup{from{transform:translateY(40px);opacity:.6}}
 @keyframes fadein{from{opacity:0}}
 @media (min-width:720px){.sheet-back{align-items:center}.sheet{border-radius:22px}}
+
+/* Tamil voice and teacher persona */
+.avatar{flex:none;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--on-accent);font-family:var(--f-head);font-weight:800;box-shadow:0 0 0 3px var(--mark)}
+.mathi{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px 14px 14px 16px;box-shadow:var(--shadow)}
+.mathi .bubble{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.mathi .who2{font-size:.78rem;color:var(--muted)}
+.mathi .who2 b{color:var(--accent);font-size:.9rem}
+.mathi .bubble p{font-size:1rem;line-height:1.55}
+.mathi.compact{box-shadow:none;background:var(--soft);border-color:transparent;text-align:left;width:100%}
+.ta-spk{width:30px;height:30px;vertical-align:middle;margin-left:4px}
+.ta-spk.labeled{width:auto;height:auto;border-radius:99px;padding:5px 12px 5px 9px;display:inline-flex;gap:6px;align-items:center;font-size:.82rem;font-weight:500;color:var(--accent)}
+.ta-spk.labeled svg{width:16px;height:16px}
+.taskrow{display:flex;gap:8px;align-items:flex-start}
+.taskrow>button:first-child{flex:1;min-width:0}
+.taskrow .ta-spk{margin-top:8px;flex:none}
+.vpanel .nota{font-size:.82rem;color:var(--muted);background:var(--soft);border-radius:10px;padding:10px 12px;line-height:1.6}
+.vpanel .check{display:flex;gap:10px;align-items:flex-start;font-size:.92rem}
+.vpanel .check input{width:20px;height:20px;margin-top:2px;accent-color:var(--accent);flex:none}
+.vpanel{max-height:calc(100vh - 140px);overflow:auto}
+.snd-card .sh .ta-spk.labeled{flex:none}
+.tasks .taskrow .ta-spk{width:30px;height:30px;padding:0;display:inline-grid;grid-template-columns:none;border-radius:50%;background:var(--soft);margin-top:8px}
+.tasks .taskrow .ta-spk svg{opacity:1}

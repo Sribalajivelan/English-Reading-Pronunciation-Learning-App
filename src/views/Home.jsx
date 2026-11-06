@@ -3,6 +3,8 @@ import { useApp } from '../lib/context.js'
 import { DAYS } from '../data/days.js'
 import { TOTAL, doneCount, nextDay, streak } from '../lib/progress.js'
 import { reviewQueue, srsStats } from '../lib/srs.js'
+import Mathi from '../components/Mathi.jsx'
+import { greeting } from '../data/persona.js'
 import Install from '../components/Install.jsx'
 import Sync from '../components/Sync.jsx'
 import Backup from '../components/Backup.jsx'
@@ -15,10 +17,15 @@ export default function Home() {
   const [play, setPlay] = useState(false)
   const dc = doneCount(S), pct = dc / TOTAL, nd = nextDay(S)
   const rq = reviewQueue(S), st = srsStats(S)
+  const last = Object.values(S.done).sort().pop()
+  const daysAway = last ? Math.round((Date.now() - new Date(last + 'T00:00:00').getTime()) / 864e5) : 0
+  const hello = greeting({ hour: new Date().getHours(), doneCount: dc, streak: streak(S), due: rq.available, next: nd || 30, daysAway })
   const R = 48, C = 2 * Math.PI * R
   const apple = () => { setPlay(true); say('apple'); setTimeout(() => setPlay(false), 2200) }
   return (
     <>
+      <Mathi text={hello} />
+
       <section className={'hero' + (play ? ' play' : '')}>
         <span className="eyebrow">APPLE எப்படி படிக்கிறது</span>
         <h1 className="ta">எழுத்துகளை இணைத்துப் படியுங்கள்</h1>

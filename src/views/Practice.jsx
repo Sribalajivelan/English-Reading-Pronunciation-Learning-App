@@ -3,6 +3,8 @@ import { useApp } from '../lib/context.js'
 import { DAYS } from '../data/days.js'
 import { TOTAL, shuf } from '../lib/progress.js'
 import { SpeakerIcon } from '../components/Icons.jsx'
+import Mathi from '../components/Mathi.jsx'
+import { roundEnd } from '../data/persona.js'
 import SpeakButton from '../components/SpeakButton.jsx'
 import { meaningOf } from '../data/meanings.js'
 import { record, reviewQueue } from '../lib/srs.js'
@@ -88,7 +90,7 @@ export default function Practice() {
       <div className="card stack" style={{ textAlign: 'center', alignItems: 'center' }}>
         <span className="eyebrow">முடிவு</span>
         <div className="score">{Q.score}/10</div>
-        <p className="ta" style={{ fontWeight: 700 }}>{msg}</p>
+        <Mathi text={roundEnd(Q.score, 10, Q.score)} autoSpeak compact />
         <p className="muted ta">சிறந்த மதிப்பெண்: {Math.max(S.best[Q.mode] || 0, Q.score)}/10</p>
         <div className="row"><button className="btn" type="button" onClick={() => start(Q.mode)}>மீண்டும்</button><button className="btn ghost" type="button" onClick={() => setQ(null)}>முடி</button></div>
       </div>
